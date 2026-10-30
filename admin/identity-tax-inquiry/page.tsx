@@ -290,7 +290,7 @@ export default function IdentityTaxInquiryAdminPage() {
               onChange={(event) => setForm({ ...form, enabled: event.target.checked })}
             />
             <span>
-              <span className="text-t1 block font-medium">啟用本功能</span>
+              <span className="text-t1 block text-[21px] font-medium">啟用本功能</span>
               <span className="text-t3 block text-xs">
                 關閉後學生／教職員／家長端只顯示維護說明，資料仍保留。
               </span>
