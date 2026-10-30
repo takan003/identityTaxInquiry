@@ -10,6 +10,7 @@ import {
   MAINTENANCE_TITLE,
   TAX_INQUIRY_STATUS_LABELS,
   formatDateTime,
+  summarizeSelections,
   type IdentityTaxInquiryRecord,
   type IdentityTaxInquirySettings,
   type IdentityWindowState,
@@ -112,7 +113,9 @@ export default function IdentityTaxInquiryParentPage() {
               <div>
                 <h2 className="text-t1 font-medium">註冊身分</h2>
                 <p className="text-t2 mt-1 text-sm">
-                  {record.identities.length ? record.identities.join("、") : "（未選擇）"}
+                  {summarizeSelections(record.identitySelections) ||
+                    record.identities.join("、") ||
+                    "（未選擇）"}
                 </p>
               </div>
               <div className="text-right text-xs">
@@ -145,20 +148,33 @@ export default function IdentityTaxInquiryParentPage() {
           )}
 
           <section className="border-themed bg-card rounded-lg border p-4">
-            <h2 className="text-t1 mb-2 text-sm font-medium">父母資料（遮蔽顯示）</h2>
+            <h2 className="text-t1 mb-2 text-sm font-medium">
+              {record.taxSubject === "self" ? "本人資料（遮蔽顯示）" : "父母資料（遮蔽顯示）"}
+            </h2>
             <dl className="grid gap-2 text-sm sm:grid-cols-2">
-              <div>
-                <dt className="text-t3 text-xs">父</dt>
-                <dd className="text-t1">
-                  {record.father.name || "—"}　{record.father.idNumber || ""}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-t3 text-xs">母</dt>
-                <dd className="text-t1">
-                  {record.mother.name || "—"}　{record.mother.idNumber || ""}
-                </dd>
-              </div>
+              {record.taxSubject === "self" ? (
+                <div>
+                  <dt className="text-t3 text-xs">本人</dt>
+                  <dd className="text-t1">
+                    {record.self.name || "—"}　{record.self.idNumber || ""}
+                  </dd>
+                </div>
+              ) : (
+                <>
+                  <div>
+                    <dt className="text-t3 text-xs">父</dt>
+                    <dd className="text-t1">
+                      {record.father.name || "—"}　{record.father.idNumber || ""}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="text-t3 text-xs">母</dt>
+                    <dd className="text-t1">
+                      {record.mother.name || "—"}　{record.mother.idNumber || ""}
+                    </dd>
+                  </div>
+                </>
+              )}
             </dl>
           </section>
         </>

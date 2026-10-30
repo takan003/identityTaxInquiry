@@ -13,8 +13,8 @@
   "author": {
     "author": "takan003",
     "authorUrl": "https://github.com/takan003",
-    "version": "0.1.0",
-    "releasedAt": "2026-10-29"
+    "version": "0.1.1",
+    "releasedAt": "2026-10-30"
   },
   "provides": { "student": true, "parent": true, "staff": true, "admin": true },
   "managerPermissions": [
@@ -58,6 +58,15 @@
   ],
   "hooks": [],
   "changelog": [
+    {
+      "version": "0.1.1",
+      "releasedAt": "2026-10-30",
+      "notes": [
+        "身分別改為管理端可增刪改：名稱、顯示順序、開放勾選、互斥群組（低收入戶與中低收入戶同組，僅能擇一）。",
+        "每個身分別可設定進階選項（下拉單選、勾選、文字，可設必填），例如障礙程度、住宿生、公費別與核准文號。",
+        "財稅查調改為每個身分別各自設定；查調對象分父母雙方／離異一方／本人（已婚），並依對象驗證證號。"
+      ]
+    },
     {
       "version": "0.1.0",
       "releasedAt": "2026-10-29",

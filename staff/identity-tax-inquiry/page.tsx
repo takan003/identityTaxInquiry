@@ -8,6 +8,7 @@ import {
   IDENTITY_WINDOW_LABELS,
   TAX_INQUIRY_STATUS_LABELS,
   formatDateTime,
+  summarizeSelections,
   type IdentityTaxInquirySettings,
   type IdentityWindowState,
   type InquiryRow,
@@ -197,7 +198,9 @@ export default function IdentityTaxInquiryStaffPage() {
                         <td className="border border-themed px-2 py-2">{row.seatNo || "—"}</td>
                         <td className="border border-themed text-t1 px-2 py-2">{row.studentName || "—"}</td>
                         <td className="border border-themed px-2 py-2">
-                          {row.identities.length ? row.identities.join("、") : "—"}
+                          {summarizeSelections(row.identitySelections) ||
+                            row.identities.join("、") ||
+                            "—"}
                         </td>
                         <td className="border border-themed px-2 py-2">
                           {row.status === "missing" ? "未填寫" : CONFIRMATION_STATUS_LABELS[row.status]}

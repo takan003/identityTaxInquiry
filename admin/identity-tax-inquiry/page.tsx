@@ -2,13 +2,18 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Toast, { type ToastMessage } from "@/components/Toast";
+import DisclosureArrow from "@/components/DisclosureArrow";
 import {
   CONFIRMATION_STATUS_LABELS,
   IDENTITY_WINDOW_LABELS,
   TAX_INQUIRY_STATUS_LABELS,
   formatDateTime,
   fromDateTimeLocal,
+  makeId,
+  summarizeSelections,
   toDateTimeLocal,
+  type IdentityFieldDef,
+  type IdentityOptionDef,
   type IdentityTaxInquirySettings,
   type IdentityWindowState,
   type InquiryRow,
@@ -20,9 +25,7 @@ interface SettingsForm {
   openAt: string;
   closeAt: string;
   instructions: string;
-  identityOptions: string[];
-  taxInquiryIdentities: string[];
-  requireParentId: boolean;
+  identityOptions: IdentityOptionDef[];
 }
 
 const EMPTY_STATS: InquiryStats = {
@@ -41,9 +44,10 @@ function formOf(settings: IdentityTaxInquirySettings): SettingsForm {
     openAt: toDateTimeLocal(settings.openAt),
     closeAt: toDateTimeLocal(settings.closeAt),
     instructions: settings.instructions,
-    identityOptions: [...settings.identityOptions],
-    taxInquiryIdentities: [...settings.taxInquiryIdentities],
-    requireParentId: settings.requireParentId,
+    identityOptions: settings.identityOptions.map((option) => ({
+      ...option,
+      fields: option.fields.map((field) => ({ ...field, options: [...field.options] })),
+    })),
   };
 }
 
@@ -133,8 +137,6 @@ export default function IdentityTaxInquiryAdminPage() {
           closeAt: fromDateTimeLocal(form.closeAt),
           instructions: form.instructions,
           identityOptions: form.identityOptions,
-          taxInquiryIdentities: form.taxInquiryIdentities,
-          requireParentId: form.requireParentId,
         }),
       });
       const data = await response.json();
@@ -153,32 +155,89 @@ export default function IdentityTaxInquiryAdminPage() {
 
   const addOption = () => {
     if (!form) return;
-    const text = optionInput.trim().slice(0, 20);
+    const text = optionInput.trim().slice(0, 40);
     if (!text) return;
-    if (form.identityOptions.includes(text)) {
+    if (form.identityOptions.some((option) => option.label === text)) {
       setToast({ kind: "error", text: "身分別已存在" });
       return;
     }
-    setForm({ ...form, identityOptions: [...form.identityOptions, text] });
+    setForm({
+      ...form,
+      identityOptions: [
+        ...form.identityOptions,
+        {
+          id: makeId("option"),
+          label: text,
+          enabled: true,
+          taxInquiry: false,
+          exclusiveGroup: "",
+          fields: [],
+        },
+      ],
+    });
     setOptionInput("");
   };
 
-  const removeOption = (value: string) => {
+  /** 更新單一身分別欄位 */
+  const updateOption = (id: string, patch: Partial<IdentityOptionDef>) => {
     if (!form) return;
     setForm({
       ...form,
-      identityOptions: form.identityOptions.filter((item) => item !== value),
-      taxInquiryIdentities: form.taxInquiryIdentities.filter((item) => item !== value),
+      identityOptions: form.identityOptions.map((option) =>
+        option.id === id ? { ...option, ...patch } : option
+      ),
     });
   };
 
-  const toggleTax = (value: string, checked: boolean) => {
+  /** 調整顯示順序 */
+  const moveOption = (index: number, delta: number) => {
+    if (!form) return;
+    const next = [...form.identityOptions];
+    const target = index + delta;
+    if (target < 0 || target >= next.length) return;
+    [next[index], next[target]] = [next[target], next[index]];
+    setForm({ ...form, identityOptions: next });
+  };
+
+  const removeOption = (id: string) => {
     if (!form) return;
     setForm({
       ...form,
-      taxInquiryIdentities: checked
-        ? [...new Set([...form.taxInquiryIdentities, value])]
-        : form.taxInquiryIdentities.filter((item) => item !== value),
+      identityOptions: form.identityOptions.filter((option) => option.id !== id),
+    });
+  };
+
+  const addField = (optionId: string) => {
+    if (!form) return;
+    updateOption(optionId, {
+      fields: [
+        ...(form.identityOptions.find((option) => option.id === optionId)?.fields ?? []),
+        {
+          id: makeId("field"),
+          type: "select",
+          label: "新選項",
+          required: false,
+          options: [],
+        } satisfies IdentityFieldDef,
+      ],
+    });
+  };
+
+  const updateField = (optionId: string, fieldId: string, patch: Partial<IdentityFieldDef>) => {
+    if (!form) return;
+    updateOption(optionId, {
+      fields: (form.identityOptions.find((option) => option.id === optionId)?.fields ?? []).map(
+        (field) => (field.id === fieldId ? { ...field, ...patch } : field)
+      ),
+    });
+  };
+
+  const removeField = (optionId: string, fieldId: string) => {
+    if (!form) return;
+    updateOption(optionId, {
+      fields: (form.identityOptions.find((option) => option.id === optionId)?.fields ?? []).filter(
+        (field) => field.id !== fieldId
+      ),
     });
   };
 
@@ -250,23 +309,161 @@ export default function IdentityTaxInquiryAdminPage() {
           </p>
 
           <div>
-            <p className="text-t2 mb-2 text-sm font-medium">身分別選項</p>
-            <div className="flex flex-wrap gap-2">
-              {form.identityOptions.map((option) => (
-                <span
-                  key={option}
-                  className="border-themed bg-surface text-t1 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs"
-                >
-                  {option}
-                  <button
-                    type="button"
-                    className="text-danger"
-                    aria-label={`移除 ${option}`}
-                    onClick={() => removeOption(option)}
-                  >
-                    ×
-                  </button>
-                </span>
+            <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+              <p className="text-t2 text-sm font-medium">身分別選項（依序顯示）</p>
+              <span className="text-t3 text-xs">共 {form.identityOptions.length} 項</span>
+            </div>
+            <div className="space-y-2">
+              {form.identityOptions.map((option, index) => (
+                <div key={option.id} className="border-themed rounded-md border p-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <input
+                      className="input-theme min-w-40 flex-1 rounded px-3 py-2 text-sm"
+                      value={option.label}
+                      maxLength={40}
+                      aria-label="身分別名稱"
+                      onChange={(event) => updateOption(option.id, { label: event.target.value })}
+                    />
+                    <button
+                      type="button"
+                      className="btn-theme rounded px-2 py-1 text-xs disabled:opacity-40"
+                      disabled={index === 0}
+                      aria-label="上移"
+                      onClick={() => moveOption(index, -1)}
+                    >
+                      ↑
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-theme rounded px-2 py-1 text-xs disabled:opacity-40"
+                      disabled={index === form.identityOptions.length - 1}
+                      aria-label="下移"
+                      onClick={() => moveOption(index, 1)}
+                    >
+                      ↓
+                    </button>
+                    <button
+                      type="button"
+                      className="text-danger rounded px-2 py-1 text-xs"
+                      onClick={() => removeOption(option.id)}
+                    >
+                      刪除
+                    </button>
+                  </div>
+                  <div className="mt-2 flex flex-wrap items-center gap-4 text-sm">
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={option.enabled}
+                        onChange={(event) =>
+                          updateOption(option.id, { enabled: event.target.checked })
+                        }
+                      />
+                      開放勾選
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={option.taxInquiry}
+                        onChange={(event) =>
+                          updateOption(option.id, { taxInquiry: event.target.checked })
+                        }
+                      />
+                      需財稅查調
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <span className="text-t2 text-xs">互斥群組</span>
+                      <input
+                        className="input-theme w-28 rounded px-2 py-1 text-xs"
+                        value={option.exclusiveGroup}
+                        maxLength={40}
+                        placeholder="例：lowIncome"
+                        onChange={(event) =>
+                          updateOption(option.id, { exclusiveGroup: event.target.value })
+                        }
+                      />
+                    </label>
+                  </div>
+                  <details className="mt-2">
+                    <summary className="text-t2 flex cursor-pointer list-none items-center gap-1 text-xs">
+                      <DisclosureArrow />
+                      進階選項（{option.fields.length}）
+                    </summary>
+                    <div className="mt-2 space-y-2">
+                      {option.fields.map((field) => (
+                        <div key={field.id} className="border-themed bg-surface rounded-md border p-2">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <input
+                              className="input-theme min-w-32 flex-1 rounded px-2 py-1 text-xs"
+                              value={field.label}
+                              maxLength={40}
+                              aria-label="進階選項名稱"
+                              onChange={(event) =>
+                                updateField(option.id, field.id, { label: event.target.value })
+                              }
+                            />
+                            <select
+                              className="input-theme rounded px-2 py-1 text-xs"
+                              value={field.type}
+                              aria-label="進階選項型態"
+                              onChange={(event) =>
+                                updateField(option.id, field.id, {
+                                  type: event.target.value as IdentityFieldDef["type"],
+                                })
+                              }
+                            >
+                              <option value="select">下拉單選</option>
+                              <option value="checkbox">勾選</option>
+                              <option value="text">文字</option>
+                            </select>
+                            <label className="text-t2 flex items-center gap-1 text-xs">
+                              <input
+                                type="checkbox"
+                                checked={field.required}
+                                onChange={(event) =>
+                                  updateField(option.id, field.id, {
+                                    required: event.target.checked,
+                                  })
+                                }
+                              />
+                              必填
+                            </label>
+                            <button
+                              type="button"
+                              className="text-danger rounded px-2 py-1 text-xs"
+                              onClick={() => removeField(option.id, field.id)}
+                            >
+                              刪除
+                            </button>
+                          </div>
+                          {field.type !== "text" && (
+                            <textarea
+                              className="input-theme mt-1 w-full rounded px-2 py-1 text-xs"
+                              rows={Math.min(5, Math.max(2, field.options.length))}
+                              value={field.options.join("\n")}
+                              placeholder="每行一個選項"
+                              onChange={(event) =>
+                                updateField(option.id, field.id, {
+                                  options: event.target.value
+                                    .split("\n")
+                                    .map((value) => value.trim())
+                                    .filter(Boolean),
+                                })
+                              }
+                            />
+                          )}
+                        </div>
+                      ))}
+                      <button
+                        type="button"
+                        className="btn-theme rounded px-3 py-1 text-xs"
+                        onClick={() => addField(option.id)}
+                      >
+                        新增進階選項
+                      </button>
+                    </div>
+                  </details>
+                </div>
               ))}
               {form.identityOptions.length === 0 && (
                 <span className="text-t3 text-xs">尚未設定，至少需要一個。</span>
@@ -277,7 +474,7 @@ export default function IdentityTaxInquiryAdminPage() {
                 className="input-theme min-w-40 flex-1 rounded px-3 py-2 text-sm"
                 placeholder="新增身分別（例：僑生）"
                 value={optionInput}
-                maxLength={20}
+                maxLength={40}
                 onChange={(event) => setOptionInput(event.target.value)}
                 onKeyDown={(event) => {
                   if (event.key === "Enter") {
@@ -290,36 +487,10 @@ export default function IdentityTaxInquiryAdminPage() {
                 新增
               </button>
             </div>
-          </div>
-
-          <div>
-            <p className="text-t2 mb-2 text-sm font-medium">需要財稅查調的身分別</p>
-            <div className="flex flex-wrap gap-3">
-              {form.identityOptions.map((option) => (
-                <label key={option} className="text-t1 flex items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    checked={form.taxInquiryIdentities.includes(option)}
-                    onChange={(event) => toggleTax(option, event.target.checked)}
-                  />
-                  {option}
-                </label>
-              ))}
-            </div>
-            <label className="mt-3 flex items-start gap-2 text-sm">
-              <input
-                type="checkbox"
-                className="mt-0.5"
-                checked={form.requireParentId}
-                onChange={(event) => setForm({ ...form, requireParentId: event.target.checked })}
-              />
-              <span>
-                <span className="text-t1 block font-medium">查調時必填父或母身分證字號</span>
-                <span className="text-t3 block text-xs">
-                  取消勾選時，學生仍可自行填寫，但不會強制。
-                </span>
-              </span>
-            </label>
+            <p className="text-t3 mt-2 text-xs">
+              互斥群組填相同代號的身分別，學生只能擇一勾選（例：低收入戶子女與中低收入戶子女同為
+              lowIncome）。
+            </p>
           </div>
 
           <label className="block text-sm">
@@ -419,7 +590,9 @@ export default function IdentityTaxInquiryAdminPage() {
                       <td className="border border-themed px-2 py-2">{row.seatNo || "—"}</td>
                       <td className="border border-themed text-t1 px-2 py-2">{row.studentName || "—"}</td>
                       <td className="border border-themed px-2 py-2">
-                        {row.identities.length ? row.identities.join("、") : "—"}
+                        {summarizeSelections(row.identitySelections) ||
+                          row.identities.join("、") ||
+                          "—"}
                       </td>
                       <td className="border border-themed px-2 py-2">
                         {row.status === "missing" ? "未填寫" : CONFIRMATION_STATUS_LABELS[row.status]}
