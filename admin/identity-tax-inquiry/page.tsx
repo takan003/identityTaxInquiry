@@ -177,6 +177,9 @@ export default function IdentityTaxInquiryAdminPage() {
           enabled: true,
           taxInquiry: false,
           exclusiveGroup: "",
+          benefitType: "",
+          benefitAmount: null,
+          benefitNote: "",
           fields: [],
         },
       ],
@@ -322,6 +325,60 @@ export default function IdentityTaxInquiryAdminPage() {
               onChange={(event) =>
                 updateOption(option.id, { exclusiveGroup: event.target.value })
               }
+            />
+          </label>
+        </div>
+        <div className="mt-2 flex flex-wrap items-center gap-4 text-sm">
+          <span className="text-t2 text-xs">優待方式</span>
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={option.benefitType === "reduction"}
+              onChange={(event) =>
+                updateOption(option.id, {
+                  benefitType: event.target.checked ? "reduction" : "",
+                })
+              }
+            />
+            減免
+          </label>
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={option.benefitType === "subsidy"}
+              onChange={(event) =>
+                updateOption(option.id, {
+                  benefitType: event.target.checked ? "subsidy" : "",
+                })
+              }
+            />
+            補助
+          </label>
+          <label className="flex items-center gap-2">
+            <span className="text-t2 text-xs">金額</span>
+            <input
+              type="text"
+              inputMode="numeric"
+              className="input-theme w-24 rounded px-2 py-1 text-xs"
+              value={option.benefitAmount ?? ""}
+              placeholder="正整數"
+              onChange={(event) => {
+                const digits = event.target.value.replace(/\D/g, "");
+                updateOption(option.id, {
+                  benefitAmount: digits ? Number(digits) : null,
+                });
+              }}
+            />
+          </label>
+          <label className="flex min-w-40 flex-1 items-center gap-2">
+            <span className="text-t2 shrink-0 text-xs">項目說明</span>
+            <input
+              type="text"
+              className="input-theme w-full rounded px-2 py-1 text-xs"
+              value={option.benefitNote ?? ""}
+              maxLength={100}
+              placeholder="例：學雜費減免"
+              onChange={(event) => updateOption(option.id, { benefitNote: event.target.value })}
             />
           </label>
         </div>

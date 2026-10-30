@@ -30,9 +30,23 @@ export interface IdentityOptionDef {
   taxInquiry: boolean;
   /** 互斥群組代號（同群組僅能擇一；空字串＝不互斥） */
   exclusiveGroup: string;
+  /** 優待方式：減免／補助（空＝未設定） */
+  benefitType?: BenefitType | "";
+  /** 優待金額（正整數；null＝未設定） */
+  benefitAmount?: number | null;
+  /** 項目說明（單行） */
+  benefitNote?: string;
   /** 進階選項（依陣列順序顯示） */
   fields: IdentityFieldDef[];
 }
+
+/** 優待方式：減免或補助（二擇一） */
+export type BenefitType = "reduction" | "subsidy";
+
+export const BENEFIT_TYPE_LABELS: Record<BenefitType, string> = {
+  reduction: "減免",
+  subsidy: "補助",
+};
 
 /** 學生勾選結果（存 label 快照，改名後舊資料仍可讀） */
 export interface IdentitySelection {
@@ -368,6 +382,9 @@ function normalizeLegacyOptions(
       enabled: true,
       taxInquiry: isTax,
       exclusiveGroup: preset?.exclusiveGroup ?? "",
+      benefitType: "",
+      benefitAmount: null,
+      benefitNote: "",
       fields: (preset?.fields ?? []).map((field) => ({ ...field, options: [...field.options] })),
     };
   });
@@ -384,12 +401,23 @@ function normalizeOption(raw: unknown, index: number): IdentityOptionDef | null 
         .filter((field): field is IdentityFieldDef => field !== null)
         .slice(0, 10)
     : [];
+  const amountRaw = data.benefitAmount;
+  const benefitAmount =
+    typeof amountRaw === "number" && Number.isInteger(amountRaw) && amountRaw > 0
+      ? amountRaw
+      : null;
   return {
     id: makeId("option", typeof data.id === "string" ? data.id : `option-${index + 1}`),
     label,
     enabled: data.enabled !== false,
     taxInquiry: data.taxInquiry === true,
     exclusiveGroup: cleanString(data.exclusiveGroup, 40),
+    benefitType:
+      data.benefitType === "reduction" || data.benefitType === "subsidy"
+        ? data.benefitType
+        : "",
+    benefitAmount,
+    benefitNote: cleanString(data.benefitNote, 100),
     fields,
   };
 }
