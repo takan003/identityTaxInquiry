@@ -13,7 +13,7 @@
   "author": {
     "author": "takan003",
     "authorUrl": "https://github.com/takan003",
-    "version": "0.1.22",
+    "version": "0.1.23",
     "releasedAt": "2026-10-30"
   },
   "provides": { "student": true, "parent": true, "staff": true, "admin": true },
@@ -58,6 +58,13 @@
   ],
   "hooks": [],
   "changelog": [
+    {
+      "version": "0.1.23",
+      "releasedAt": "2026-10-30",
+      "notes": [
+        "學生端：勾選需查調的身分別時才顯示「財稅查調資料」區塊；標記文字改為「（需查調財稅資料）」。"
+      ]
+    },
     {
       "version": "0.1.22",
       "releasedAt": "2026-10-30",

@@ -346,7 +346,9 @@ export default function IdentityTaxInquiryStudentPage() {
                     onChange={() => toggleIdentity(option)}
                   />
                   <span>{option.label}</span>
-                  {option.taxInquiry && <span className="text-warning text-xs">（需查調）</span>}
+                  {option.taxInquiry && (
+                    <span className="text-warning text-xs">（需查調財稅資料）</span>
+                  )}
                 </label>
                 {checked &&
                   option.fields.map((field) => {
@@ -443,14 +445,13 @@ export default function IdentityTaxInquiryStudentPage() {
         <p className="text-t3 mt-2 text-xs">請依實際情形勾選。</p>
       </section>
 
-      <section className="border-themed bg-card rounded-lg p-4">
-        <h3 className="text-t1 mb-1 font-medium">財稅查調資料</h3>
-        <p className="text-t3 mb-3 text-xs">
-          {taxRequired
-            ? "你勾選的身分別需要財稅查調，請依下方查調對象填寫姓名與身分證字號。"
-            : "目前勾選的身分別不需要財稅查調，本區可留空。"}
-        </p>
-        {taxRequired && (
+      {taxRequired && (
+        <section className="border-themed bg-card rounded-lg p-4">
+          <h3 className="text-t1 mb-1 font-medium">財稅查調資料</h3>
+          <p className="text-t3 mb-3 text-xs">
+            你勾選的身分別需要財稅查調，請依下方查調對象填寫姓名與身分證字號。
+          </p>
+          {taxRequired && (
           <fieldset className="mb-3">
             <legend className="text-t2 mb-1 text-xs">查調對象</legend>
             <div className="flex flex-wrap gap-3 text-sm">
@@ -514,7 +515,8 @@ export default function IdentityTaxInquiryStudentPage() {
             onChange={(event) => setNote(event.target.value)}
           />
         </label>
-      </section>
+        </section>
+      )}
 
       <div className="flex flex-wrap justify-end gap-2">
         {canEdit ? (
