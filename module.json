@@ -13,7 +13,7 @@
   "author": {
     "author": "takan003",
     "authorUrl": "https://github.com/takan003",
-    "version": "0.1.15",
+    "version": "0.1.16",
     "releasedAt": "2026-10-30"
   },
   "provides": { "student": true, "parent": true, "staff": true, "admin": true },
@@ -58,6 +58,13 @@
   ],
   "hooks": [],
   "changelog": [
+    {
+      "version": "0.1.16",
+      "releasedAt": "2026-10-30",
+      "notes": [
+        "標題尺寸調整：管理規則 46px；啟用本功能、實施說明、身分別選項、候選區統一 36px 粗體。"
+      ]
+    },
     {
       "version": "0.1.15",
       "releasedAt": "2026-10-30",
