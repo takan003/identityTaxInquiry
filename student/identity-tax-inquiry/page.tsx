@@ -18,6 +18,7 @@ import {
   TAX_INQUIRY_STATUS_LABELS,
   TAX_SUBJECT_LABELS,
   enabledIdentityOptions,
+  fieldOptionLabel,
   formatDateTime,
   isValidIdNumber,
   needsTaxInquiry,
@@ -369,9 +370,9 @@ export default function IdentityTaxInquiryStudentPage() {
                               }
                             >
                               <option value="">請選擇</option>
-                              {field.options.map((value) => (
-                                <option key={value} value={value}>
-                                  {value}
+                              {field.options.map((item) => (
+                                <option key={fieldOptionLabel(item)} value={fieldOptionLabel(item)}>
+                                  {fieldOptionLabel(item)}
                                 </option>
                               ))}
                             </select>
@@ -386,10 +387,11 @@ export default function IdentityTaxInquiryStudentPage() {
                               {field.required ? " *" : ""}
                             </legend>
                             <div className="flex flex-wrap gap-3">
-                              {field.options.map((value) => {
-                                const active = values.includes(value);
+                              {field.options.map((item) => {
+                                const label = fieldOptionLabel(item);
+                                const active = values.includes(label);
                                 return (
-                                  <label key={value} className="text-t1 flex items-center gap-2">
+                                  <label key={label} className="text-t1 flex items-center gap-2">
                                     <input
                                       type="checkbox"
                                       disabled={!canEdit}
@@ -399,12 +401,12 @@ export default function IdentityTaxInquiryStudentPage() {
                                           option.id,
                                           field.id,
                                           active
-                                            ? values.filter((item) => item !== value)
-                                            : [...values, value]
+                                            ? values.filter((value) => value !== label)
+                                            : [...values, label]
                                         )
                                       }
                                     />
-                                    {value}
+                                    {label}
                                   </label>
                                 );
                               })}

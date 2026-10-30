@@ -8,6 +8,19 @@ export const SETTINGS_DOC_ID = "default";
 /** 進階選項型態：下拉單選／勾選（可多選）／文字 */
 export type IdentityFieldType = "select" | "checkbox" | "text";
 
+/** 進階選項的單一可選值：項目代碼＋項目名稱 */
+export interface IdentityFieldOption {
+  /** 項目代碼（可空） */
+  code: string;
+  /** 項目名稱（顯示用） */
+  name: string;
+}
+
+/** 顯示文字：有代碼時為「代碼 名稱」 */
+export function fieldOptionLabel(option: IdentityFieldOption): string {
+  return [option.code.trim(), option.name.trim()].filter(Boolean).join(" ");
+}
+
 export interface IdentityFieldDef {
   /** 穩定 id（改名不影響已存資料） */
   id: string;
@@ -17,7 +30,7 @@ export interface IdentityFieldDef {
   /** 送出確認時是否必填 */
   required: boolean;
   /** select＝選項清單；checkbox＝可勾選項目（僅 1 個即為單一勾選）；text＝不使用 */
-  options: string[];
+  options: IdentityFieldOption[];
 }
 
 export interface IdentityOptionDef {
@@ -65,7 +78,13 @@ export const PARENT_NAME_MAX = 40;
 export const NOTE_MAX = 500;
 
 /** 預設「身心障礙」程度選項 */
-const DEFAULT_DISABILITY_LEVELS = ["極重度", "重度", "中度", "輕度", "持鑑定證明"];
+const DEFAULT_DISABILITY_LEVELS: IdentityFieldOption[] = [
+  { code: "", name: "極重度" },
+  { code: "", name: "重度" },
+  { code: "", name: "中度" },
+  { code: "", name: "輕度" },
+  { code: "", name: "持鑑定證明" },
+];
 
 /** 預設身分別（管理端可增刪改、調順序、設互斥） */
 export const DEFAULT_IDENTITY_OPTIONS: IdentityOptionDef[] = [
@@ -136,7 +155,7 @@ export const DEFAULT_IDENTITY_OPTIONS: IdentityOptionDef[] = [
         type: "checkbox",
         label: "住宿",
         required: false,
-        options: ["住宿生"],
+        options: [{ code: "", name: "住宿生" }],
       },
     ],
   },
@@ -160,14 +179,21 @@ export const DEFAULT_IDENTITY_OPTIONS: IdentityOptionDef[] = [
         type: "select",
         label: "公費別",
         required: false,
-        options: ["全公費", "半公費"],
+        options: [
+          { code: "", name: "全公費" },
+          { code: "", name: "半公費" },
+        ],
       },
       {
         id: "grant-item",
         type: "select",
         label: "補助項目",
         required: false,
-        options: ["主食米-12公斤(公教)", "主食米-12公斤(私教)", "代金"],
+        options: [
+          { code: "", name: "主食米-12公斤(公教)" },
+          { code: "", name: "主食米-12公斤(私教)" },
+          { code: "", name: "代金" },
+        ],
       },
       {
         id: "grant-doc-no",
@@ -349,6 +375,24 @@ export function makeId(prefix: string, existing?: string): string {
   return `${prefix}-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}`;
 }
 
+function normalizeFieldOptions(value: unknown): IdentityFieldOption[] {
+  if (!Array.isArray(value)) return [];
+  const list: IdentityFieldOption[] = [];
+  for (const item of value) {
+    if (typeof item === "string") {
+      const name = cleanString(item, IDENTITY_FIELD_VALUE_MAX);
+      if (name) list.push({ code: "", name });
+    } else if (item && typeof item === "object" && !Array.isArray(item)) {
+      const record = item as Record<string, unknown>;
+      const code = cleanString(record.code, 20);
+      const name = cleanString(record.name, IDENTITY_FIELD_VALUE_MAX) || code;
+      if (name || code) list.push({ code, name });
+    }
+    if (list.length >= IDENTITY_FIELD_OPTION_MAX) break;
+  }
+  return list;
+}
+
 function normalizeField(raw: unknown, index: number): IdentityFieldDef | null {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
   const data = raw as Record<string, unknown>;
@@ -361,10 +405,7 @@ function normalizeField(raw: unknown, index: number): IdentityFieldDef | null {
     type,
     label,
     required: data.required === true,
-    options:
-      type === "text"
-        ? []
-        : cleanStringList(data.options, IDENTITY_FIELD_VALUE_MAX, IDENTITY_FIELD_OPTION_MAX),
+    options: type === "text" ? [] : normalizeFieldOptions(data.options),
   };
 }
 
@@ -640,7 +681,8 @@ function parseSelectionFields(
       values[field.id] = [];
       continue;
     }
-    const invalid = picked.find((value) => !field.options.includes(value));
+    const allowed = field.options.map((option) => fieldOptionLabel(option));
+    const invalid = picked.find((value) => !allowed.includes(value));
     if (invalid) {
       return { ok: false, message: `「${def.label}」的${field.label}選項不正確，請重新選擇` };
     }

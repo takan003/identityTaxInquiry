@@ -13,7 +13,7 @@
   "author": {
     "author": "takan003",
     "authorUrl": "https://github.com/takan003",
-    "version": "0.1.20",
+    "version": "0.1.21",
     "releasedAt": "2026-10-30"
   },
   "provides": { "student": true, "parent": true, "staff": true, "admin": true },
@@ -58,6 +58,13 @@
   ],
   "hooks": [],
   "changelog": [
+    {
+      "version": "0.1.21",
+      "releasedAt": "2026-10-30",
+      "notes": [
+        "進階選項的選項清單改為逐列「項目代碼＋項目名稱」單行輸入，可新增／刪除選項；舊資料自動轉換（代碼空白、名稱為原值）。"
+      ]
+    },
     {
       "version": "0.1.20",
       "releasedAt": "2026-10-30",

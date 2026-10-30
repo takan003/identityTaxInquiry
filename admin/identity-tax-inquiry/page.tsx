@@ -14,6 +14,7 @@ import {
   summarizeSelections,
   toDateTimeLocal,
   type IdentityFieldDef,
+  type IdentityFieldOption,
   type IdentityOptionDef,
   type IdentityTaxInquirySettings,
   type IdentityWindowState,
@@ -256,6 +257,39 @@ export default function IdentityTaxInquiryAdminPage() {
     });
   };
 
+  /** 更新進階選項的單一可選值 */
+  const updateFieldOption = (
+    optionId: string,
+    fieldId: string,
+    index: number,
+    patch: Partial<IdentityFieldOption>
+  ) => {
+    if (!form) return;
+    const fields = form.identityOptions.find((option) => option.id === optionId)?.fields ?? [];
+    updateField(optionId, fieldId, {
+      options: (fields.find((field) => field.id === fieldId)?.options ?? []).map((item, i) =>
+        i === index ? { ...item, ...patch } : item
+      ),
+    });
+  };
+
+  /** 新增一個可選值（預設空白，由管理者填代碼與名稱） */
+  const addFieldOption = (optionId: string, fieldId: string) => {
+    const fields = form?.identityOptions.find((option) => option.id === optionId)?.fields ?? [];
+    updateField(optionId, fieldId, {
+      options: [...(fields.find((field) => field.id === fieldId)?.options ?? []), { code: "", name: "" }],
+    });
+  };
+
+  const removeFieldOption = (optionId: string, fieldId: string, index: number) => {
+    const fields = form?.identityOptions.find((option) => option.id === optionId)?.fields ?? [];
+    updateField(optionId, fieldId, {
+      options: (fields.find((field) => field.id === fieldId)?.options ?? []).filter(
+        (_, i) => i !== index
+      ),
+    });
+  };
+
   /** 單一身分別卡片（group 用來判斷上移／下移是否到頂） */
   const renderOptionCard = (option: IdentityOptionDef, group: IdentityOptionDef[]) => {
     const index = group.findIndex((item) => item.id === option.id);
@@ -433,24 +467,55 @@ export default function IdentityTaxInquiryAdminPage() {
                   </button>
                 </div>
                 {field.type !== "text" && (
-                  <div className="mt-1">
+                  <div className="mt-1 space-y-1">
                     <span className="text-t3 block text-xs">
-                      選項清單（每行一個；下拉＝單選、勾選＝可多選）
+                      選項清單（項目代碼＋項目名稱；下拉＝單選、勾選＝可多選）
                     </span>
-                    <textarea
-                      className="input-theme mt-1 w-full rounded px-3 py-2 text-sm"
-                      rows={Math.min(5, Math.max(2, field.options.length))}
-                      value={field.options.join("\n")}
-                      placeholder="每行一個選項，例：極重度&#10;重度&#10;中度"
-                      onChange={(event) =>
-                        updateField(option.id, field.id, {
-                          options: event.target.value
-                            .split("\n")
-                            .map((value) => value.trim())
-                            .filter(Boolean),
-                        })
-                      }
-                    />
+                    {field.options.map((item, optionIndex) => (
+                      <div
+                        key={`${field.id}-${optionIndex}`}
+                        className="flex flex-wrap items-center gap-2"
+                      >
+                        <input
+                          className="input-theme w-24 rounded px-2 py-1.5 text-sm"
+                          placeholder="代碼"
+                          value={item.code}
+                          maxLength={20}
+                          aria-label="項目代碼"
+                          onChange={(event) =>
+                            updateFieldOption(option.id, field.id, optionIndex, {
+                              code: event.target.value,
+                            })
+                          }
+                        />
+                        <input
+                          className="input-theme min-w-40 flex-1 rounded px-2 py-1.5 text-sm"
+                          placeholder="項目名稱"
+                          value={item.name}
+                          maxLength={100}
+                          aria-label="項目名稱"
+                          onChange={(event) =>
+                            updateFieldOption(option.id, field.id, optionIndex, {
+                              name: event.target.value,
+                            })
+                          }
+                        />
+                        <button
+                          type="button"
+                          className="text-danger rounded px-2 py-1 text-xs"
+                          onClick={() => removeFieldOption(option.id, field.id, optionIndex)}
+                        >
+                          刪除
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      className="btn-theme rounded px-3 py-1 text-xs"
+                      onClick={() => addFieldOption(option.id, field.id)}
+                    >
+                      新增選項
+                    </button>
                   </div>
                 )}
               </div>
