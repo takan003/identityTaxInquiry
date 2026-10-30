@@ -153,7 +153,11 @@ export default function IdentityTaxInquiryParentPage() {
 
           <section className="border-themed bg-card rounded-lg border p-4">
             <h2 className="text-t1 mb-2 text-sm font-medium">
-              {record.taxSubject === "self" ? "本人資料（遮蔽顯示）" : "父母資料（遮蔽顯示）"}
+              {record.taxSubject === "self"
+                ? "本人資料（遮蔽顯示）"
+                : record.taxSubject === "guardian"
+                  ? "監護人資料（遮蔽顯示）"
+                  : "父母資料（遮蔽顯示）"}
             </h2>
             <dl className="grid gap-2 text-sm sm:grid-cols-2">
               {record.taxSubject === "self" ? (
@@ -161,6 +165,13 @@ export default function IdentityTaxInquiryParentPage() {
                   <dt className="text-t3 text-xs">本人</dt>
                   <dd className="text-t1">
                     {record.self.name || "—"}　{record.self.idNumber || ""}
+                  </dd>
+                </div>
+              ) : record.taxSubject === "guardian" ? (
+                <div>
+                  <dt className="text-t3 text-xs">監護人</dt>
+                  <dd className="text-t1">
+                    {record.guardian.name || "—"}　{record.guardian.idNumber || ""}
                   </dd>
                 </div>
               ) : (

@@ -228,12 +228,13 @@ export const DEFAULT_IDENTITY_OPTIONS: IdentityOptionDef[] = [
 ];
 
 /** 財稅查調對象：父母雙方／父母離異（有撫養權一方）／本人（已婚） */
-export type TaxSubject = "both" | "one" | "self";
+export type TaxSubject = "both" | "one" | "self" | "guardian";
 
 export const TAX_SUBJECT_LABELS: Record<TaxSubject, string> = {
   both: "父母雙方",
   one: "父或母一方（離異或亡故）",
   self: "本人（已結婚）",
+  guardian: "監護人（法定代理人無法行使）",
 };
 
 export const MAINTENANCE_TITLE = "此功能目前未啟用";
@@ -310,6 +311,8 @@ export interface IdentityTaxInquiryRecord {
   mother: ParentIdInfo;
   /** 已婚學生的本人資料（查調對象＝本人時使用） */
   self: ParentIdInfo;
+  /** 監護人資料（查調對象＝監護人時使用） */
+  guardian: ParentIdInfo;
   note: string;
   status: ConfirmationStatus;
   confirmedAt: number | null;
@@ -334,6 +337,7 @@ export interface InquiryRow {
   father: ParentIdInfo;
   mother: ParentIdInfo;
   self: ParentIdInfo;
+  guardian: ParentIdInfo;
   note: string;
   confirmedAt: number | null;
   updatedAt: number;
@@ -634,6 +638,7 @@ export interface RecordInput {
   father: ParentIdInfo;
   mother: ParentIdInfo;
   self: ParentIdInfo;
+  guardian: ParentIdInfo;
   note: string;
 }
 
@@ -756,14 +761,21 @@ export function parseRecordInput(
   const father = readParentInfo(data.father);
   const mother = readParentInfo(data.mother);
   const self = readParentInfo(data.self);
-  for (const parent of [father, mother, self]) {
+  const guardian = readParentInfo(data.guardian);
+  for (const parent of [father, mother, self, guardian]) {
     if (parent.idNumber && !isValidIdNumber(parent.idNumber)) {
       return { ok: false, message: "身分證字號格式不正確（例：A123456789）" };
     }
   }
 
   const taxSubject: TaxSubject =
-    data.taxSubject === "one" ? "one" : data.taxSubject === "self" ? "self" : "both";
+    data.taxSubject === "one"
+      ? "one"
+      : data.taxSubject === "self"
+        ? "self"
+        : data.taxSubject === "guardian"
+          ? "guardian"
+          : "both";
   const note = cleanString(data.note, NOTE_MAX);
 
   if (mode === "confirm") {
@@ -784,6 +796,9 @@ export function parseRecordInput(
       if (taxSubject === "self" && !isCompleteParent(self)) {
         return { ok: false, message: "已結婚者請填寫本人的姓名與身分證字號" };
       }
+      if (taxSubject === "guardian" && !isCompleteParent(guardian)) {
+        return { ok: false, message: "請填寫監護人的姓名與身分證字號" };
+      }
     }
   }
 
@@ -796,6 +811,7 @@ export function parseRecordInput(
       father,
       mother,
       self,
+      guardian,
       note,
     },
   };

@@ -52,6 +52,7 @@ export default function IdentityTaxInquiryStudentPage() {
   const [father, setFather] = useState({ name: "", idNumber: "" });
   const [mother, setMother] = useState({ name: "", idNumber: "" });
   const [self, setSelf] = useState({ name: "", idNumber: "" });
+  const [guardian, setGuardian] = useState({ name: "", idNumber: "" });
   const [note, setNote] = useState("");
 
   useEffect(() => {
@@ -91,6 +92,7 @@ export default function IdentityTaxInquiryStudentPage() {
       setFather(current?.father ?? { name: "", idNumber: "" });
       setMother(current?.mother ?? { name: "", idNumber: "" });
       setSelf(current?.self ?? { name: "", idNumber: "" });
+      setGuardian(current?.guardian ?? { name: "", idNumber: "" });
       setNote(current?.note ?? "");
     } catch {
       setToast({ kind: "error", text: "讀取資料失敗" });
@@ -110,7 +112,7 @@ export default function IdentityTaxInquiryStudentPage() {
         setToast({ kind: "error", text: "請至少選擇一個註冊身分別" });
         return;
       }
-      for (const parent of [father, mother, self]) {
+      for (const parent of [father, mother, self, guardian]) {
         if (parent.idNumber && !isValidIdNumber(parent.idNumber)) {
           setToast({ kind: "error", text: "身分證字號格式不正確（例：A123456789）" });
           return;
@@ -131,6 +133,10 @@ export default function IdentityTaxInquiryStudentPage() {
           setToast({ kind: "error", text: "請填寫本人的姓名與身分證字號" });
           return;
         }
+        if (taxSubject === "guardian" && !complete(guardian)) {
+          setToast({ kind: "error", text: "請填寫監護人的姓名與身分證字號" });
+          return;
+        }
       }
     }
     setSaving(action);
@@ -145,6 +151,7 @@ export default function IdentityTaxInquiryStudentPage() {
           father,
           mother,
           self,
+          guardian,
           note,
         }),
       });
@@ -455,7 +462,7 @@ export default function IdentityTaxInquiryStudentPage() {
           <fieldset className="mb-3">
             <legend className="text-t2 mb-1 text-xs">查調對象</legend>
             <div className="flex flex-wrap gap-3 text-sm">
-              {(["both", "one", "self"] as const).map((value) => (
+              {(["both", "one", "self", "guardian"] as const).map((value) => (
                 <label key={value} className="text-t1 flex items-center gap-2">
                   <input
                     type="radio"
@@ -473,10 +480,12 @@ export default function IdentityTaxInquiryStudentPage() {
         <div className="grid gap-4 sm:grid-cols-2">
           {(taxSubject === "self"
             ? ([["本人", self, setSelf]] as const)
-            : ([
-                ["父", father, setFather],
-                ["母", mother, setMother],
-              ] as const)
+            : taxSubject === "guardian"
+              ? ([["監護人", guardian, setGuardian]] as const)
+              : ([
+                  ["父", father, setFather],
+                  ["母", mother, setMother],
+                ] as const)
           ).map(([label, value, setter]) => (
             <div key={label} className="space-y-2">
               <p className="text-t2 text-sm font-medium">{label}</p>

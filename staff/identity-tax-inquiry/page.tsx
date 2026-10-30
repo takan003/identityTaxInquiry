@@ -254,7 +254,13 @@ export default function IdentityTaxInquiryStaffPage() {
               更新財稅查調：{target.studentName}
             </h2>
             <p className="text-t3 mt-1 text-xs">
-              父母證號：{target.father.idNumber || target.mother.idNumber ? "已填寫" : "未填寫"}
+              查調證號：
+              {target.father.idNumber ||
+              target.mother.idNumber ||
+              target.self.idNumber ||
+              target.guardian.idNumber
+                ? "已填寫"
+                : "未填寫"}
             </p>
             <label className="mt-3 block text-sm">
               <span className="text-t2 mb-1 block">查調狀態</span>
