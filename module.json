@@ -13,7 +13,7 @@
   "author": {
     "author": "takan003",
     "authorUrl": "https://github.com/takan003",
-    "version": "0.1.26",
+    "version": "0.1.27",
     "releasedAt": "2026-10-30"
   },
   "provides": { "student": true, "parent": true, "staff": true, "admin": true },
@@ -58,6 +58,13 @@
   ],
   "hooks": [],
   "changelog": [
+    {
+      "version": "0.1.27",
+      "releasedAt": "2026-10-30",
+      "notes": [
+        "查調對象用語調整：「父母（法定代理人）雙方」、「監護人（法定代理人無法行使親權）」，CSV 同步。"
+      ]
+    },
     {
       "version": "0.1.26",
       "releasedAt": "2026-10-30",

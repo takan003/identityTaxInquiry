@@ -467,7 +467,7 @@ export function buildInquiryCsv(rows: InquiryRow[], includeIdNumbers: boolean): 
             ? "本人"
             : row.taxSubject === "guardian"
               ? "監護人"
-              : "父母雙方";
+              : "父母（法定代理人）雙方";
     lines.push(
       [
         row.className || row.classCode,

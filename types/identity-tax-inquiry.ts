@@ -231,10 +231,10 @@ export const DEFAULT_IDENTITY_OPTIONS: IdentityOptionDef[] = [
 export type TaxSubject = "both" | "one" | "self" | "guardian";
 
 export const TAX_SUBJECT_LABELS: Record<TaxSubject, string> = {
-  both: "父母雙方",
+  both: "父母（法定代理人）雙方",
   one: "父或母一方（離異或亡故）",
   self: "本人（已結婚）",
-  guardian: "監護人（法定代理人無法行使）",
+  guardian: "監護人（法定代理人無法行使親權）",
 };
 
 export const MAINTENANCE_TITLE = "此功能目前未啟用";
