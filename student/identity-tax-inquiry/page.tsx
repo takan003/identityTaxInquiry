@@ -18,7 +18,7 @@ import {
   TAX_INQUIRY_STATUS_LABELS,
   TAX_SUBJECT_LABELS,
   enabledIdentityOptions,
-  fieldOptionLabel,
+  fieldOptionName,
   formatDateTime,
   isValidIdNumber,
   needsTaxInquiry,
@@ -374,8 +374,8 @@ export default function IdentityTaxInquiryStudentPage() {
                           >
                             <option value="">請選擇</option>
                             {field.options.map((item) => (
-                              <option key={fieldOptionLabel(item)} value={fieldOptionLabel(item)}>
-                                {fieldOptionLabel(item)}
+                              <option key={fieldOptionName(item)} value={fieldOptionName(item)}>
+                                {fieldOptionName(item)}
                               </option>
                             ))}
                           </select>
@@ -390,7 +390,7 @@ export default function IdentityTaxInquiryStudentPage() {
                             {field.required ? " *" : ""}
                           </span>
                           {field.options.map((item) => {
-                            const label = fieldOptionLabel(item);
+                            const label = fieldOptionName(item);
                             const active = values.includes(label);
                             return (
                               <label key={label} className="text-t1 flex items-center gap-1">

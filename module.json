@@ -13,7 +13,7 @@
   "author": {
     "author": "takan003",
     "authorUrl": "https://github.com/takan003",
-    "version": "0.1.23",
+    "version": "0.1.24",
     "releasedAt": "2026-10-30"
   },
   "provides": { "student": true, "parent": true, "staff": true, "admin": true },
@@ -58,6 +58,13 @@
   ],
   "hooks": [],
   "changelog": [
+    {
+      "version": "0.1.24",
+      "releasedAt": "2026-10-30",
+      "notes": [
+        "學生端進階選項只顯示項目名稱，不再顯示項目代碼（代碼仍保留於管理端設定與資料中）。"
+      ]
+    },
     {
       "version": "0.1.23",
       "releasedAt": "2026-10-30",

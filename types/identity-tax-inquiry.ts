@@ -21,6 +21,11 @@ export function fieldOptionLabel(option: IdentityFieldOption): string {
   return [option.code.trim(), option.name.trim()].filter(Boolean).join(" ");
 }
 
+/** 學生端顯示文字：只顯示項目名稱（名稱空白時退回代碼） */
+export function fieldOptionName(option: IdentityFieldOption): string {
+  return option.name.trim() || option.code.trim();
+}
+
 export interface IdentityFieldDef {
   /** 穩定 id（改名不影響已存資料） */
   id: string;
@@ -681,7 +686,7 @@ function parseSelectionFields(
       values[field.id] = [];
       continue;
     }
-    const allowed = field.options.map((option) => fieldOptionLabel(option));
+    const allowed = field.options.map((option) => fieldOptionName(option));
     const invalid = picked.find((value) => !allowed.includes(value));
     if (invalid) {
       return { ok: false, message: `「${def.label}」的${field.label}選項不正確，請重新選擇` };
