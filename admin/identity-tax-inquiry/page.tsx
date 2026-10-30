@@ -259,7 +259,7 @@ export default function IdentityTaxInquiryAdminPage() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="content-width mx-auto space-y-4">
       <Toast message={toast} onClose={() => setToast(null)} />
 
       <section className="border border-themed bg-card rounded-lg p-4">
