@@ -13,7 +13,7 @@
   "author": {
     "author": "takan003",
     "authorUrl": "https://github.com/takan003",
-    "version": "0.1.28",
+    "version": "0.1.29",
     "releasedAt": "2026-10-30"
   },
   "provides": { "student": true, "parent": true, "staff": true, "admin": true },
@@ -58,6 +58,13 @@
   ],
   "hooks": [],
   "changelog": [
+    {
+      "version": "0.1.29",
+      "releasedAt": "2026-10-30",
+      "notes": [
+        "移除文字欄位與標題重複的 placeholder；身分證字號欄改顯示範例「例：A123456789」。"
+      ]
+    },
     {
       "version": "0.1.28",
       "releasedAt": "2026-10-30",

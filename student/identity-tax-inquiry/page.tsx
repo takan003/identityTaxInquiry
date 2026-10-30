@@ -436,7 +436,9 @@ export default function IdentityTaxInquiryStudentPage() {
                           disabled={!canEdit}
                           maxLength={100}
                           value={values[0] ?? ""}
-                          placeholder={field.label}
+                          placeholder={
+                            field.label.includes("身分證") ? "例：A123456789" : undefined
+                          }
                           onChange={(event) =>
                             setFieldValues(
                               option.id,
