@@ -318,7 +318,7 @@ export default function IdentityTaxInquiryAdminPage() {
           <label className="flex items-center gap-2">
             <span className="text-t2 text-xs">互斥群組</span>
             <input
-              className="input-theme w-28 rounded px-2 py-1 text-xs"
+              className="input-theme w-32 rounded px-3 py-2 text-sm"
               value={option.exclusiveGroup}
               maxLength={40}
               placeholder="例：lowIncome"
@@ -359,7 +359,7 @@ export default function IdentityTaxInquiryAdminPage() {
             <input
               type="text"
               inputMode="numeric"
-              className="input-theme w-24 rounded px-2 py-1 text-xs"
+              className="input-theme w-28 rounded px-3 py-2 text-sm"
               value={option.benefitAmount ?? ""}
               placeholder="正整數"
               onChange={(event) => {
@@ -375,7 +375,7 @@ export default function IdentityTaxInquiryAdminPage() {
           <span className="text-t2 shrink-0 text-xs">項目說明</span>
           <input
             type="text"
-            className="input-theme w-full max-w-xl rounded px-2 py-1 text-xs"
+            className="input-theme w-full max-w-xl rounded px-3 py-2 text-sm"
             value={option.benefitNote ?? ""}
             maxLength={100}
             placeholder="例：學雜費減免"
@@ -392,7 +392,7 @@ export default function IdentityTaxInquiryAdminPage() {
               <div key={field.id} className="border-themed bg-surface rounded-md border p-2">
                 <div className="flex flex-wrap items-center gap-2">
                   <input
-                    className="input-theme min-w-32 flex-1 rounded px-2 py-1 text-xs"
+                    className="input-theme min-w-32 flex-1 rounded px-3 py-2 text-sm"
                     value={field.label}
                     maxLength={40}
                     aria-label="進階選項名稱"
@@ -401,7 +401,7 @@ export default function IdentityTaxInquiryAdminPage() {
                     }
                   />
                   <select
-                    className="input-theme rounded px-2 py-1 text-xs"
+                    className="input-theme rounded px-3 py-2 text-sm"
                     value={field.type}
                     aria-label="進階選項型態"
                     onChange={(event) =>
@@ -438,7 +438,7 @@ export default function IdentityTaxInquiryAdminPage() {
                       選項清單（每行一個；下拉＝單選、勾選＝可多選）
                     </span>
                     <textarea
-                      className="input-theme mt-1 w-full rounded px-2 py-1 text-xs"
+                      className="input-theme mt-1 w-full rounded px-3 py-2 text-sm"
                       rows={Math.min(5, Math.max(2, field.options.length))}
                       value={field.options.join("\n")}
                       placeholder="每行一個選項，例：極重度&#10;重度&#10;中度"
