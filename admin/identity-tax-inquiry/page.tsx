@@ -494,6 +494,17 @@ export default function IdentityTaxInquiryAdminPage() {
             目前狀態：{IDENTITY_WINDOW_LABELS[windowState]}（未設定開放時間＝學生端唯讀）
           </p>
 
+          <label className="block text-sm">
+            <span className="text-t2 mb-1 block">實施說明</span>
+            <RichTextEditor
+              value={form.instructions}
+              onChange={(value) => setForm({ ...form, instructions: value })}
+              maxLength={2000}
+              placeholder="提供給學生與家長閱讀的說明"
+              ariaLabel="實施說明"
+            />
+          </label>
+
           <div className="border-themed rounded-md border p-3">
             <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
               <p className="text-t2 text-sm font-medium">身分別選項（依序顯示）</p>
@@ -528,17 +539,6 @@ export default function IdentityTaxInquiryAdminPage() {
               lowIncome）。
             </p>
           </div>
-
-          <label className="block text-sm">
-            <span className="text-t2 mb-1 block">實施說明</span>
-            <RichTextEditor
-              value={form.instructions}
-              onChange={(value) => setForm({ ...form, instructions: value })}
-              maxLength={2000}
-              placeholder="提供給學生與家長閱讀的說明"
-              ariaLabel="實施說明"
-            />
-          </label>
 
           <div className="flex justify-end">
             <button

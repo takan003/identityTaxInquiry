@@ -13,7 +13,7 @@
   "author": {
     "author": "takan003",
     "authorUrl": "https://github.com/takan003",
-    "version": "0.1.11",
+    "version": "0.1.12",
     "releasedAt": "2026-10-30"
   },
   "provides": { "student": true, "parent": true, "staff": true, "admin": true },
@@ -58,6 +58,13 @@
   ],
   "hooks": [],
   "changelog": [
+    {
+      "version": "0.1.12",
+      "releasedAt": "2026-10-30",
+      "notes": [
+        "實施說明移到身分別選項卡片之上（仍在卡片之外），方便先設定說明再編輯選項。"
+      ]
+    },
     {
       "version": "0.1.11",
       "releasedAt": "2026-10-30",
