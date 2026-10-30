@@ -490,7 +490,7 @@ export default function IdentityTaxInquiryAdminPage() {
             目前狀態：{IDENTITY_WINDOW_LABELS[windowState]}（未設定開放時間＝學生端唯讀）
           </p>
 
-          <div>
+          <div className="border-themed rounded-md border p-3">
             <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
               <p className="text-t2 text-sm font-medium">身分別選項（依序顯示）</p>
               <span className="text-t3 text-xs">共 {enabledOptions.length} 項</span>
