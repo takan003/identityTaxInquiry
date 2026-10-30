@@ -13,7 +13,7 @@
   "author": {
     "author": "takan003",
     "authorUrl": "https://github.com/takan003",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "releasedAt": "2026-10-30"
   },
   "provides": { "student": true, "parent": true, "staff": true, "admin": true },
@@ -58,6 +58,13 @@
   ],
   "hooks": [],
   "changelog": [
+    {
+      "version": "0.1.5",
+      "releasedAt": "2026-10-30",
+      "notes": [
+        "管理規則卡片內新增上方「儲存設定」按鈕，長表單不必捲到最下方即可儲存。"
+      ]
+    },
     {
       "version": "0.1.4",
       "releasedAt": "2026-10-30",

@@ -272,6 +272,16 @@ export default function IdentityTaxInquiryAdminPage() {
         </summary>
 
         <div className="mt-3 space-y-4">
+          <div className="flex justify-end">
+            <button
+              type="button"
+              className="btn-primary rounded px-4 py-2 text-sm disabled:opacity-50"
+              disabled={saving}
+              onClick={() => void save()}
+            >
+              {saving ? "儲存中…" : "儲存設定"}
+            </button>
+          </div>
           <label className="flex items-start gap-2 text-sm">
             <input
               type="checkbox"
