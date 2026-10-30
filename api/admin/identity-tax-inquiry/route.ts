@@ -4,6 +4,7 @@ import { enforceRateLimit, RATE } from "@/lib/rate-limit";
 import { getClientIp, logActivity } from "@/lib/audit";
 import { requireModulePermission, toAuthResponse } from "@/lib/dal";
 import { getCurrentPeriod } from "@/lib/settings-server";
+import { normalizeRichHtmlField } from "@/lib/rich-text";
 import {
   buildInquiryCsv,
   buildInquiryRows,
@@ -170,7 +171,7 @@ export async function POST(request: NextRequest) {
       enabled: body.enabled === true,
       openAt,
       closeAt,
-      instructions: typeof body.instructions === "string" ? body.instructions : "",
+      instructions: normalizeRichHtmlField(body.instructions, 20000),
       identityOptions: optionsRaw,
       updatedAt: Date.now(),
     });
@@ -197,7 +198,7 @@ export async function POST(request: NextRequest) {
       enabled: body.enabled === true,
       openAt,
       closeAt,
-      instructions: typeof body.instructions === "string" ? body.instructions : "",
+      instructions: normalizeRichHtmlField(body.instructions, 20000),
       updatedAt: Date.now(),
     };
 

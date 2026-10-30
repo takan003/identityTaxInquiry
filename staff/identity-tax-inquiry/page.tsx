@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Toast, { type ToastMessage } from "@/components/Toast";
+import { RichTextContent } from "@/components/RichTextEditor";
+import { stripHtmlToText } from "@/lib/rich-text";
 import {
   CONFIRMATION_STATUS_LABELS,
   IDENTITY_WINDOW_LABELS,
@@ -172,8 +174,8 @@ export default function IdentityTaxInquiryStaffPage() {
 
           <section className="border-themed bg-card rounded-lg p-4">
             <h2 className="text-t1 mb-3 text-base font-semibold">確認名冊</h2>
-            {settings && settings.instructions.trim() && (
-              <p className="text-t3 mb-3 whitespace-pre-line text-xs">{settings.instructions}</p>
+            {settings && stripHtmlToText(settings.instructions).trim() && (
+              <RichTextContent html={settings.instructions} className="text-t3 mb-3 text-xs" />
             )}
             {rows.length === 0 ? (
               <p className="text-t3 text-sm">目前沒有資料。</p>

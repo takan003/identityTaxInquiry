@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Toast, { type ToastMessage } from "@/components/Toast";
+import { RichTextContent } from "@/components/RichTextEditor";
+import { stripHtmlToText } from "@/lib/rich-text";
 import DisclosureArrow from "@/components/DisclosureArrow";
 import {
   CONFIRMATION_STATUS_LABELS,
@@ -92,13 +94,15 @@ export default function IdentityTaxInquiryParentPage() {
         </p>
       </header>
 
-      {settings?.instructions.trim() && (
+      {settings?.instructions && stripHtmlToText(settings.instructions).trim() && (
         <details className="border-themed bg-card rounded-lg border">
           <summary className="text-t1 flex cursor-pointer items-center gap-2 p-4 font-medium">
             <DisclosureArrow />
             實施說明
           </summary>
-          <p className="text-t2 px-4 pb-4 whitespace-pre-line text-sm">{settings.instructions}</p>
+          <div className="px-4 pb-4">
+            <RichTextContent html={settings.instructions} className="text-t2 text-sm" />
+          </div>
         </details>
       )}
 

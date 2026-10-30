@@ -435,7 +435,7 @@ export function normalizeSettings(raw: unknown): IdentityTaxInquirySettings {
     enabled: data.enabled === true,
     openAt,
     closeAt,
-    instructions: typeof data.instructions === "string" ? data.instructions.slice(0, 5000) : "",
+    instructions: typeof data.instructions === "string" ? data.instructions.slice(0, 20000) : "",
     identityOptions:
       identityOptions.length > 0
         ? identityOptions

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Toast, { type ToastMessage } from "@/components/Toast";
 import DisclosureArrow from "@/components/DisclosureArrow";
+import { RichTextEditor } from "@/components/RichTextEditor";
 import {
   CONFIRMATION_STATUS_LABELS,
   IDENTITY_WINDOW_LABELS,
@@ -258,6 +259,9 @@ export default function IdentityTaxInquiryAdminPage() {
     return (
       <div key={option.id} className="border-themed rounded-md border p-3">
         <div className="flex flex-wrap items-center gap-2">
+          <span className="text-t3 w-6 shrink-0 text-xs tabular-nums" aria-hidden="true">
+            {index + 1}.
+          </span>
           <input
             className="input-theme min-w-40 flex-1 rounded px-3 py-2 text-sm"
             value={option.label}
@@ -527,12 +531,12 @@ export default function IdentityTaxInquiryAdminPage() {
 
           <label className="block text-sm">
             <span className="text-t2 mb-1 block">實施說明</span>
-            <textarea
-              className="input-theme min-h-28 w-full rounded px-3 py-2"
+            <RichTextEditor
               value={form.instructions}
-              maxLength={5000}
-              placeholder="提供給學生與家長閱讀的說明（純文字）"
-              onChange={(event) => setForm({ ...form, instructions: event.target.value })}
+              onChange={(value) => setForm({ ...form, instructions: value })}
+              maxLength={2000}
+              placeholder="提供給學生與家長閱讀的說明"
+              ariaLabel="實施說明"
             />
           </label>
 

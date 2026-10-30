@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import AdSense from "@/components/AdSense";
 import Copyright from "@/components/Copyright";
 import Toast, { type ToastMessage } from "@/components/Toast";
+import { RichTextContent } from "@/components/RichTextEditor";
+import { stripHtmlToText } from "@/lib/rich-text";
 import { fetchSettings } from "@/lib/settings-client";
 import { logout } from "@/lib/session";
 import { defaultSettings, type Settings } from "@/types/settings";
@@ -301,10 +303,10 @@ export default function IdentityTaxInquiryStudentPage() {
             )}
           </div>
         </div>
-        {settings.instructions.trim() && (
+        {stripHtmlToText(settings.instructions).trim() && (
           <div className="border-themed bg-surface mt-3 rounded-md border p-3">
             <p className="text-t1 text-xs font-medium">實施說明</p>
-            <p className="text-t2 mt-1 whitespace-pre-line text-sm">{settings.instructions}</p>
+            <RichTextContent html={settings.instructions} className="text-t2 mt-1 text-sm" />
           </div>
         )}
       </section>

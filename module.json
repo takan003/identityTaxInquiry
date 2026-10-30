@@ -13,7 +13,7 @@
   "author": {
     "author": "takan003",
     "authorUrl": "https://github.com/takan003",
-    "version": "0.1.9",
+    "version": "0.1.10",
     "releasedAt": "2026-10-30"
   },
   "provides": { "student": true, "parent": true, "staff": true, "admin": true },
@@ -58,6 +58,13 @@
   ],
   "hooks": [],
   "changelog": [
+    {
+      "version": "0.1.10",
+      "releasedAt": "2026-10-30",
+      "notes": [
+        "身分別卡片前方加上順位編號；實施說明改為所見即所得編輯器，學生／教職員／家長端以富文本呈現。"
+      ]
+    },
     {
       "version": "0.1.9",
       "releasedAt": "2026-10-30",
