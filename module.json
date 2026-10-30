@@ -13,7 +13,7 @@
   "author": {
     "author": "takan003",
     "authorUrl": "https://github.com/takan003",
-    "version": "0.1.18",
+    "version": "0.1.19",
     "releasedAt": "2026-10-30"
   },
   "provides": { "student": true, "parent": true, "staff": true, "admin": true },
@@ -58,6 +58,13 @@
   ],
   "hooks": [],
   "changelog": [
+    {
+      "version": "0.1.19",
+      "releasedAt": "2026-10-30",
+      "notes": [
+        "身分別欄位重新排列：第1行開放勾選（危險色）與互斥群組、第2行優待性質與金額、第3行項目說明；「優待方式」更名為「優待性質」。"
+      ]
+    },
     {
       "version": "0.1.18",
       "releasedAt": "2026-10-30",

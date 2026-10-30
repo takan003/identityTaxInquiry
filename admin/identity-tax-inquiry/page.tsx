@@ -299,7 +299,7 @@ export default function IdentityTaxInquiryAdminPage() {
           </button>
         </div>
         <div className="mt-2 flex flex-wrap items-center gap-4 text-sm">
-          <label className="flex items-center gap-2">
+          <label className="text-danger flex items-center gap-2">
             <input
               type="checkbox"
               checked={option.enabled}
@@ -329,7 +329,7 @@ export default function IdentityTaxInquiryAdminPage() {
           </label>
         </div>
         <div className="mt-2 flex flex-wrap items-center gap-4 text-sm">
-          <span className="text-t2 text-xs">優待方式</span>
+          <span className="text-t2 text-xs">優待性質</span>
           <label className="flex items-center gap-2">
             <input
               type="checkbox"
@@ -370,18 +370,18 @@ export default function IdentityTaxInquiryAdminPage() {
               }}
             />
           </label>
-          <label className="flex min-w-40 flex-1 items-center gap-2">
-            <span className="text-t2 shrink-0 text-xs">項目說明</span>
-            <input
-              type="text"
-              className="input-theme w-full rounded px-2 py-1 text-xs"
-              value={option.benefitNote ?? ""}
-              maxLength={100}
-              placeholder="例：學雜費減免"
-              onChange={(event) => updateOption(option.id, { benefitNote: event.target.value })}
-            />
-          </label>
         </div>
+        <label className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+          <span className="text-t2 shrink-0 text-xs">項目說明</span>
+          <input
+            type="text"
+            className="input-theme w-full max-w-xl rounded px-2 py-1 text-xs"
+            value={option.benefitNote ?? ""}
+            maxLength={100}
+            placeholder="例：學雜費減免"
+            onChange={(event) => updateOption(option.id, { benefitNote: event.target.value })}
+          />
+        </label>
         <details className="mt-2">
           <summary className="text-t2 flex cursor-pointer list-none items-center gap-1 text-xs">
             <DisclosureArrow />
