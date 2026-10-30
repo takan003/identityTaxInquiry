@@ -13,7 +13,7 @@
   "author": {
     "author": "takan003",
     "authorUrl": "https://github.com/takan003",
-    "version": "0.1.12",
+    "version": "0.1.13",
     "releasedAt": "2026-10-30"
   },
   "provides": { "student": true, "parent": true, "staff": true, "admin": true },
@@ -58,6 +58,13 @@
   ],
   "hooks": [],
   "changelog": [
+    {
+      "version": "0.1.13",
+      "releasedAt": "2026-10-30",
+      "notes": [
+        "管理端標題字體放大 50% 並改為粗體（管理規則、確認進度、確認名冊、實施說明、身分別選項、候選區）。"
+      ]
+    },
     {
       "version": "0.1.12",
       "releasedAt": "2026-10-30",

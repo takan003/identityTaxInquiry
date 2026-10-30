@@ -437,7 +437,7 @@ export default function IdentityTaxInquiryAdminPage() {
 
       <details className="border border-themed bg-card rounded-lg p-4">
         <summary className="flex cursor-pointer list-none flex-wrap items-center justify-between gap-2">
-          <h2 className="text-t1 flex items-center gap-2 text-lg font-semibold">
+          <h2 className="text-t1 flex items-center gap-2 text-[27px] font-bold">
             <DisclosureArrow />
             管理規則
           </h2>
@@ -463,7 +463,7 @@ export default function IdentityTaxInquiryAdminPage() {
               onChange={(event) => setForm({ ...form, enabled: event.target.checked })}
             />
             <span>
-              <span className="text-t1 block text-[21px] font-medium">啟用本功能</span>
+              <span className="text-t1 block text-[21px] font-bold">啟用本功能</span>
               <span className="text-t3 block text-xs">
                 關閉後學生／教職員／家長端只顯示維護說明，資料仍保留。
               </span>
@@ -495,7 +495,7 @@ export default function IdentityTaxInquiryAdminPage() {
           </p>
 
           <label className="block text-sm">
-            <span className="text-t2 mb-1 block">實施說明</span>
+            <span className="text-t2 mb-1 block text-[21px] font-bold">實施說明</span>
             <RichTextEditor
               value={form.instructions}
               onChange={(value) => setForm({ ...form, instructions: value })}
@@ -507,7 +507,7 @@ export default function IdentityTaxInquiryAdminPage() {
 
           <div className="border-themed rounded-md border p-3">
             <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-              <p className="text-t2 text-sm font-medium">身分別選項（依序顯示）</p>
+              <p className="text-t2 text-[21px] font-bold">身分別選項（依序顯示）</p>
               <span className="text-t3 text-xs">共 {enabledOptions.length} 項</span>
             </div>
             <div className="space-y-2">
@@ -553,7 +553,7 @@ export default function IdentityTaxInquiryAdminPage() {
 
           <div className="border-themed mt-2 rounded-md border border-dashed p-3">
             <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-              <p className="text-t2 text-sm font-medium">候選區</p>
+              <p className="text-t2 text-[21px] font-bold">候選區</p>
               <span className="text-t3 text-xs">共 {disabledOptions.length} 項</span>
             </div>
             <p className="text-t3 mb-2 text-xs">
@@ -570,7 +570,7 @@ export default function IdentityTaxInquiryAdminPage() {
       </details>
 
       <section className="border border-themed bg-card rounded-lg p-4">
-        <h2 className="text-t1 mb-3 text-lg font-semibold">確認進度</h2>
+        <h2 className="text-t1 mb-3 text-[27px] font-bold">確認進度</h2>
         <div className="grid grid-cols-2 gap-2 text-sm sm:grid-cols-4">
           {[
             ["應確認", stats.total],
@@ -591,7 +591,7 @@ export default function IdentityTaxInquiryAdminPage() {
 
       <section className="border border-themed bg-card rounded-lg p-4">
         <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
-          <h2 className="text-t1 text-lg font-semibold">確認名冊</h2>
+          <h2 className="text-t1 text-[27px] font-bold">確認名冊</h2>
           <div className="flex flex-wrap items-end gap-2">
             <label className="text-sm">
               <span className="text-t2 mb-1 block text-xs">班級代碼（可留空＝全部）</span>
