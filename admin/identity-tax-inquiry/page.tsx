@@ -437,20 +437,25 @@ export default function IdentityTaxInquiryAdminPage() {
                             </button>
                           </div>
                           {field.type !== "text" && (
-                            <textarea
-                              className="input-theme mt-1 w-full rounded px-2 py-1 text-xs"
-                              rows={Math.min(5, Math.max(2, field.options.length))}
-                              value={field.options.join("\n")}
-                              placeholder="每行一個選項"
-                              onChange={(event) =>
-                                updateField(option.id, field.id, {
-                                  options: event.target.value
-                                    .split("\n")
-                                    .map((value) => value.trim())
-                                    .filter(Boolean),
-                                })
-                              }
-                            />
+                            <div className="mt-1">
+                              <span className="text-t3 block text-xs">
+                                選項清單（每行一個；下拉＝單選、勾選＝可多選）
+                              </span>
+                              <textarea
+                                className="input-theme mt-1 w-full rounded px-2 py-1 text-xs"
+                                rows={Math.min(5, Math.max(2, field.options.length))}
+                                value={field.options.join("\n")}
+                                placeholder="每行一個選項，例：極重度&#10;重度&#10;中度"
+                                onChange={(event) =>
+                                  updateField(option.id, field.id, {
+                                    options: event.target.value
+                                      .split("\n")
+                                      .map((value) => value.trim())
+                                      .filter(Boolean),
+                                  })
+                                }
+                              />
+                            </div>
                           )}
                         </div>
                       ))}
