@@ -472,7 +472,7 @@ export default function IdentityTaxInquiryAdminPage() {
 
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="block text-sm">
-              <span className="text-t2 mb-1 block">確認開放時間</span>
+              <span className="text-t2 mb-1 block text-[36px] font-bold">確認開放時間</span>
               <input
                 type="datetime-local"
                 className="input-theme w-full rounded px-3 py-2"
@@ -481,7 +481,7 @@ export default function IdentityTaxInquiryAdminPage() {
               />
             </label>
             <label className="block text-sm">
-              <span className="text-t2 mb-1 block">確認截止時間</span>
+              <span className="text-t2 mb-1 block text-[36px] font-bold">確認截止時間</span>
               <input
                 type="datetime-local"
                 className="input-theme w-full rounded px-3 py-2"
