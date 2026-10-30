@@ -262,13 +262,16 @@ export default function IdentityTaxInquiryAdminPage() {
     <div className="content-width mx-auto space-y-4">
       <Toast message={toast} onClose={() => setToast(null)} />
 
-      <section className="border border-themed bg-card rounded-lg p-4">
-        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-          <h2 className="text-t1 text-lg font-semibold">管理規則</h2>
+      <details className="border border-themed bg-card rounded-lg p-4">
+        <summary className="flex cursor-pointer list-none flex-wrap items-center justify-between gap-2">
+          <h2 className="text-t1 flex items-center gap-2 text-lg font-semibold">
+            <DisclosureArrow />
+            管理規則
+          </h2>
           <span className="text-t3 text-xs">{period ? `${period} 學期` : ""}</span>
-        </div>
+        </summary>
 
-        <div className="space-y-4">
+        <div className="mt-3 space-y-4">
           <label className="flex items-start gap-2 text-sm">
             <input
               type="checkbox"
@@ -520,7 +523,7 @@ export default function IdentityTaxInquiryAdminPage() {
             </button>
           </div>
         </div>
-      </section>
+      </details>
 
       <section className="border border-themed bg-card rounded-lg p-4">
         <h2 className="text-t1 mb-3 text-lg font-semibold">確認進度</h2>
