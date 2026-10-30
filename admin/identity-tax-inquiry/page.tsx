@@ -194,14 +194,20 @@ export default function IdentityTaxInquiryAdminPage() {
     });
   };
 
-  /** 調整顯示順序 */
-  const moveOption = (index: number, delta: number) => {
+  /** 在目前群組（開放／候選）內調整順序 */
+  const moveOption = (id: string, delta: number) => {
     if (!form) return;
-    const next = [...form.identityOptions];
-    const target = index + delta;
-    if (target < 0 || target >= next.length) return;
-    [next[index], next[target]] = [next[target], next[index]];
-    setForm({ ...form, identityOptions: next });
+    const current = form.identityOptions.find((option) => option.id === id);
+    if (!current) return;
+    const group = form.identityOptions.filter((option) => option.enabled === current.enabled);
+    const index = group.findIndex((option) => option.id === id);
+    const target = group[index + delta];
+    if (!target) return;
+    const list = [...form.identityOptions];
+    const i = list.findIndex((option) => option.id === id);
+    const j = list.findIndex((option) => option.id === target.id);
+    [list[i], list[j]] = [list[j], list[i]];
+    setForm({ ...form, identityOptions: list });
   };
 
   const removeOption = (id: string) => {
@@ -246,6 +252,161 @@ export default function IdentityTaxInquiryAdminPage() {
     });
   };
 
+  /** 單一身分別卡片（group 用來判斷上移／下移是否到頂） */
+  const renderOptionCard = (option: IdentityOptionDef, group: IdentityOptionDef[]) => {
+    const index = group.findIndex((item) => item.id === option.id);
+    return (
+      <div key={option.id} className="border-themed rounded-md border p-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <input
+            className="input-theme min-w-40 flex-1 rounded px-3 py-2 text-sm"
+            value={option.label}
+            maxLength={40}
+            aria-label="身分別名稱"
+            onChange={(event) => updateOption(option.id, { label: event.target.value })}
+          />
+          <button
+            type="button"
+            className="btn-theme rounded px-2 py-1 text-xs disabled:opacity-40"
+            disabled={index <= 0}
+            aria-label="上移"
+            onClick={() => moveOption(option.id, -1)}
+          >
+            ↑
+          </button>
+          <button
+            type="button"
+            className="btn-theme rounded px-2 py-1 text-xs disabled:opacity-40"
+            disabled={index === group.length - 1}
+            aria-label="下移"
+            onClick={() => moveOption(option.id, 1)}
+          >
+            ↓
+          </button>
+          <button
+            type="button"
+            className="text-danger rounded px-2 py-1 text-xs"
+            onClick={() => removeOption(option.id)}
+          >
+            刪除
+          </button>
+        </div>
+        <div className="mt-2 flex flex-wrap items-center gap-4 text-sm">
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={option.enabled}
+              onChange={(event) => updateOption(option.id, { enabled: event.target.checked })}
+            />
+            開放勾選
+          </label>
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={option.taxInquiry}
+              onChange={(event) => updateOption(option.id, { taxInquiry: event.target.checked })}
+            />
+            需財稅查調
+          </label>
+          <label className="flex items-center gap-2">
+            <span className="text-t2 text-xs">互斥群組</span>
+            <input
+              className="input-theme w-28 rounded px-2 py-1 text-xs"
+              value={option.exclusiveGroup}
+              maxLength={40}
+              placeholder="例：lowIncome"
+              onChange={(event) =>
+                updateOption(option.id, { exclusiveGroup: event.target.value })
+              }
+            />
+          </label>
+        </div>
+        <details className="mt-2">
+          <summary className="text-t2 flex cursor-pointer list-none items-center gap-1 text-xs">
+            <DisclosureArrow />
+            進階選項（{option.fields.length}）
+          </summary>
+          <div className="mt-2 space-y-2">
+            {option.fields.map((field) => (
+              <div key={field.id} className="border-themed bg-surface rounded-md border p-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  <input
+                    className="input-theme min-w-32 flex-1 rounded px-2 py-1 text-xs"
+                    value={field.label}
+                    maxLength={40}
+                    aria-label="進階選項名稱"
+                    onChange={(event) =>
+                      updateField(option.id, field.id, { label: event.target.value })
+                    }
+                  />
+                  <select
+                    className="input-theme rounded px-2 py-1 text-xs"
+                    value={field.type}
+                    aria-label="進階選項型態"
+                    onChange={(event) =>
+                      updateField(option.id, field.id, {
+                        type: event.target.value as IdentityFieldDef["type"],
+                      })
+                    }
+                  >
+                    <option value="select">下拉單選</option>
+                    <option value="checkbox">勾選</option>
+                    <option value="text">文字</option>
+                  </select>
+                  <label className="text-t2 flex items-center gap-1 text-xs">
+                    <input
+                      type="checkbox"
+                      checked={field.required}
+                      onChange={(event) =>
+                        updateField(option.id, field.id, { required: event.target.checked })
+                      }
+                    />
+                    必填
+                  </label>
+                  <button
+                    type="button"
+                    className="text-danger rounded px-2 py-1 text-xs"
+                    onClick={() => removeField(option.id, field.id)}
+                  >
+                    刪除
+                  </button>
+                </div>
+                {field.type !== "text" && (
+                  <div className="mt-1">
+                    <span className="text-t3 block text-xs">
+                      選項清單（每行一個；下拉＝單選、勾選＝可多選）
+                    </span>
+                    <textarea
+                      className="input-theme mt-1 w-full rounded px-2 py-1 text-xs"
+                      rows={Math.min(5, Math.max(2, field.options.length))}
+                      value={field.options.join("\n")}
+                      placeholder="每行一個選項，例：極重度&#10;重度&#10;中度"
+                      onChange={(event) =>
+                        updateField(option.id, field.id, {
+                          options: event.target.value
+                            .split("\n")
+                            .map((value) => value.trim())
+                            .filter(Boolean),
+                        })
+                      }
+                    />
+                  </div>
+                )}
+              </div>
+            ))}
+            <button
+              type="button"
+              className="btn-theme rounded px-3 py-1 text-xs"
+              onClick={() => addField(option.id)}
+            >
+              新增進階選項
+            </button>
+          </div>
+        </details>
+      </div>
+    );
+  };
+
   const pageCount = useMemo(() => {
     if (!rows) return 0;
     return Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
@@ -262,6 +423,9 @@ export default function IdentityTaxInquiryAdminPage() {
   if (!form) {
     return <p className="text-danger p-4 text-sm">無法載入設定，請重新整理。</p>;
   }
+
+  const enabledOptions = form.identityOptions.filter((option) => option.enabled);
+  const disabledOptions = form.identityOptions.filter((option) => !option.enabled);
 
   return (
     <div className="content-width mx-auto space-y-4">
@@ -329,167 +493,12 @@ export default function IdentityTaxInquiryAdminPage() {
           <div>
             <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
               <p className="text-t2 text-sm font-medium">身分別選項（依序顯示）</p>
-              <span className="text-t3 text-xs">共 {form.identityOptions.length} 項</span>
+              <span className="text-t3 text-xs">共 {enabledOptions.length} 項</span>
             </div>
             <div className="space-y-2">
-              {form.identityOptions.map((option, index) => (
-                <div key={option.id} className="border-themed rounded-md border p-3">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <input
-                      className="input-theme min-w-40 flex-1 rounded px-3 py-2 text-sm"
-                      value={option.label}
-                      maxLength={40}
-                      aria-label="身分別名稱"
-                      onChange={(event) => updateOption(option.id, { label: event.target.value })}
-                    />
-                    <button
-                      type="button"
-                      className="btn-theme rounded px-2 py-1 text-xs disabled:opacity-40"
-                      disabled={index === 0}
-                      aria-label="上移"
-                      onClick={() => moveOption(index, -1)}
-                    >
-                      ↑
-                    </button>
-                    <button
-                      type="button"
-                      className="btn-theme rounded px-2 py-1 text-xs disabled:opacity-40"
-                      disabled={index === form.identityOptions.length - 1}
-                      aria-label="下移"
-                      onClick={() => moveOption(index, 1)}
-                    >
-                      ↓
-                    </button>
-                    <button
-                      type="button"
-                      className="text-danger rounded px-2 py-1 text-xs"
-                      onClick={() => removeOption(option.id)}
-                    >
-                      刪除
-                    </button>
-                  </div>
-                  <div className="mt-2 flex flex-wrap items-center gap-4 text-sm">
-                    <label className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={option.enabled}
-                        onChange={(event) =>
-                          updateOption(option.id, { enabled: event.target.checked })
-                        }
-                      />
-                      開放勾選
-                    </label>
-                    <label className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={option.taxInquiry}
-                        onChange={(event) =>
-                          updateOption(option.id, { taxInquiry: event.target.checked })
-                        }
-                      />
-                      需財稅查調
-                    </label>
-                    <label className="flex items-center gap-2">
-                      <span className="text-t2 text-xs">互斥群組</span>
-                      <input
-                        className="input-theme w-28 rounded px-2 py-1 text-xs"
-                        value={option.exclusiveGroup}
-                        maxLength={40}
-                        placeholder="例：lowIncome"
-                        onChange={(event) =>
-                          updateOption(option.id, { exclusiveGroup: event.target.value })
-                        }
-                      />
-                    </label>
-                  </div>
-                  <details className="mt-2">
-                    <summary className="text-t2 flex cursor-pointer list-none items-center gap-1 text-xs">
-                      <DisclosureArrow />
-                      進階選項（{option.fields.length}）
-                    </summary>
-                    <div className="mt-2 space-y-2">
-                      {option.fields.map((field) => (
-                        <div key={field.id} className="border-themed bg-surface rounded-md border p-2">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <input
-                              className="input-theme min-w-32 flex-1 rounded px-2 py-1 text-xs"
-                              value={field.label}
-                              maxLength={40}
-                              aria-label="進階選項名稱"
-                              onChange={(event) =>
-                                updateField(option.id, field.id, { label: event.target.value })
-                              }
-                            />
-                            <select
-                              className="input-theme rounded px-2 py-1 text-xs"
-                              value={field.type}
-                              aria-label="進階選項型態"
-                              onChange={(event) =>
-                                updateField(option.id, field.id, {
-                                  type: event.target.value as IdentityFieldDef["type"],
-                                })
-                              }
-                            >
-                              <option value="select">下拉單選</option>
-                              <option value="checkbox">勾選</option>
-                              <option value="text">文字</option>
-                            </select>
-                            <label className="text-t2 flex items-center gap-1 text-xs">
-                              <input
-                                type="checkbox"
-                                checked={field.required}
-                                onChange={(event) =>
-                                  updateField(option.id, field.id, {
-                                    required: event.target.checked,
-                                  })
-                                }
-                              />
-                              必填
-                            </label>
-                            <button
-                              type="button"
-                              className="text-danger rounded px-2 py-1 text-xs"
-                              onClick={() => removeField(option.id, field.id)}
-                            >
-                              刪除
-                            </button>
-                          </div>
-                          {field.type !== "text" && (
-                            <div className="mt-1">
-                              <span className="text-t3 block text-xs">
-                                選項清單（每行一個；下拉＝單選、勾選＝可多選）
-                              </span>
-                              <textarea
-                                className="input-theme mt-1 w-full rounded px-2 py-1 text-xs"
-                                rows={Math.min(5, Math.max(2, field.options.length))}
-                                value={field.options.join("\n")}
-                                placeholder="每行一個選項，例：極重度&#10;重度&#10;中度"
-                                onChange={(event) =>
-                                  updateField(option.id, field.id, {
-                                    options: event.target.value
-                                      .split("\n")
-                                      .map((value) => value.trim())
-                                      .filter(Boolean),
-                                  })
-                                }
-                              />
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                      <button
-                        type="button"
-                        className="btn-theme rounded px-3 py-1 text-xs"
-                        onClick={() => addField(option.id)}
-                      >
-                        新增進階選項
-                      </button>
-                    </div>
-                  </details>
-                </div>
-              ))}
-              {form.identityOptions.length === 0 && (
-                <span className="text-t3 text-xs">尚未設定，至少需要一個。</span>
+              {enabledOptions.map((option) => renderOptionCard(option, enabledOptions))}
+              {enabledOptions.length === 0 && (
+                <span className="text-t3 text-xs">目前沒有開放勾選的身分別。</span>
               )}
             </div>
             <div className="mt-2 flex flex-wrap gap-2">
@@ -536,6 +545,22 @@ export default function IdentityTaxInquiryAdminPage() {
             >
               {saving ? "儲存中…" : "儲存設定"}
             </button>
+          </div>
+
+          <div className="border-themed mt-2 rounded-md border border-dashed p-3">
+            <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+              <p className="text-t2 text-sm font-medium">候選區</p>
+              <span className="text-t3 text-xs">共 {disabledOptions.length} 項</span>
+            </div>
+            <p className="text-t3 mb-2 text-xs">
+              取消「開放勾選」並儲存後，身分別會移到這裡；重新勾選「開放勾選」即可回到上方清單。
+            </p>
+            <div className="space-y-2">
+              {disabledOptions.map((option) => renderOptionCard(option, disabledOptions))}
+              {disabledOptions.length === 0 && (
+                <span className="text-t3 text-xs">目前沒有候選項目。</span>
+              )}
+            </div>
           </div>
         </div>
       </details>

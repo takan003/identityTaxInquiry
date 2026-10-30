@@ -13,7 +13,7 @@
   "author": {
     "author": "takan003",
     "authorUrl": "https://github.com/takan003",
-    "version": "0.1.7",
+    "version": "0.1.8",
     "releasedAt": "2026-10-30"
   },
   "provides": { "student": true, "parent": true, "staff": true, "admin": true },
@@ -58,6 +58,13 @@
   ],
   "hooks": [],
   "changelog": [
+    {
+      "version": "0.1.8",
+      "releasedAt": "2026-10-30",
+      "notes": [
+        "管理端新增「候選區」：取消「開放勾選」的身分別會集中到下方儲存設定之後，可重新勾選回到主清單。"
+      ]
+    },
     {
       "version": "0.1.7",
       "releasedAt": "2026-10-30",
