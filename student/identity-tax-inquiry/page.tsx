@@ -329,13 +329,16 @@ export default function IdentityTaxInquiryStudentPage() {
 
       <section className="border-themed bg-card rounded-lg p-4">
         <h3 className="text-t1 mb-3 font-medium">註冊身分別（可複選）</h3>
-        <div className="space-y-3">
+        <div className="space-y-2">
           {enabledIdentityOptions(settings).map((option) => {
             const selection = selections.find((item) => item.optionId === option.id);
             const checked = Boolean(selection);
             return (
-              <div key={option.id} className="border-themed rounded-md border p-3">
-                <label className="text-t1 flex flex-wrap items-center gap-2 text-sm">
+              <div
+                key={option.id}
+                className="border-themed flex flex-wrap items-center gap-x-4 gap-y-2 rounded-md border px-3 py-2"
+              >
+                <label className="text-t1 flex shrink-0 items-center gap-2 text-sm">
                   <input
                     type="checkbox"
                     disabled={!canEdit}
@@ -344,88 +347,21 @@ export default function IdentityTaxInquiryStudentPage() {
                   />
                   <span>{option.label}</span>
                   {option.taxInquiry && <span className="text-warning text-xs">（需查調）</span>}
-                  {option.exclusiveGroup && <span className="text-t3 text-xs">（與同組擇一）</span>}
                 </label>
-                {checked && option.fields.length > 0 && (
-                  <div className="mt-2 space-y-2 pl-6">
-                    {option.fields.map((field) => {
-                      const values = selection?.values[field.id] ?? [];
-                      if (field.type === "select") {
-                        return (
-                          <label key={field.id} className="block text-sm">
-                            <span className="text-t2 mb-1 block text-xs">
-                              {field.label}
-                              {field.required ? " *" : ""}
-                            </span>
-                            <select
-                              className="input-theme rounded px-3 py-2 text-sm"
-                              disabled={!canEdit}
-                              value={values[0] ?? ""}
-                              onChange={(event) =>
-                                setFieldValues(
-                                  option.id,
-                                  field.id,
-                                  event.target.value ? [event.target.value] : []
-                                )
-                              }
-                            >
-                              <option value="">請選擇</option>
-                              {field.options.map((item) => (
-                                <option key={fieldOptionLabel(item)} value={fieldOptionLabel(item)}>
-                                  {fieldOptionLabel(item)}
-                                </option>
-                              ))}
-                            </select>
-                          </label>
-                        );
-                      }
-                      if (field.type === "checkbox") {
-                        return (
-                          <fieldset key={field.id} className="text-sm">
-                            <legend className="text-t2 mb-1 text-xs">
-                              {field.label}
-                              {field.required ? " *" : ""}
-                            </legend>
-                            <div className="flex flex-wrap gap-3">
-                              {field.options.map((item) => {
-                                const label = fieldOptionLabel(item);
-                                const active = values.includes(label);
-                                return (
-                                  <label key={label} className="text-t1 flex items-center gap-2">
-                                    <input
-                                      type="checkbox"
-                                      disabled={!canEdit}
-                                      checked={active}
-                                      onChange={() =>
-                                        setFieldValues(
-                                          option.id,
-                                          field.id,
-                                          active
-                                            ? values.filter((value) => value !== label)
-                                            : [...values, label]
-                                        )
-                                      }
-                                    />
-                                    {label}
-                                  </label>
-                                );
-                              })}
-                            </div>
-                          </fieldset>
-                        );
-                      }
+                {checked &&
+                  option.fields.map((field) => {
+                    const values = selection?.values[field.id] ?? [];
+                    if (field.type === "select") {
                       return (
-                        <label key={field.id} className="block text-sm">
-                          <span className="text-t2 mb-1 block text-xs">
+                        <label key={field.id} className="flex items-center gap-2 text-xs">
+                          <span className="text-t3 shrink-0">
                             {field.label}
                             {field.required ? " *" : ""}
                           </span>
-                          <input
-                            className="input-theme w-full rounded px-3 py-2 text-sm sm:max-w-md"
+                          <select
+                            className="input-theme rounded px-2 py-1 text-sm"
                             disabled={!canEdit}
-                            maxLength={100}
                             value={values[0] ?? ""}
-                            placeholder={field.label}
                             onChange={(event) =>
                               setFieldValues(
                                 option.id,
@@ -433,19 +369,78 @@ export default function IdentityTaxInquiryStudentPage() {
                                 event.target.value ? [event.target.value] : []
                               )
                             }
-                          />
+                          >
+                            <option value="">請選擇</option>
+                            {field.options.map((item) => (
+                              <option key={fieldOptionLabel(item)} value={fieldOptionLabel(item)}>
+                                {fieldOptionLabel(item)}
+                              </option>
+                            ))}
+                          </select>
                         </label>
                       );
-                    })}
-                  </div>
-                )}
+                    }
+                    if (field.type === "checkbox") {
+                      return (
+                        <div key={field.id} className="flex flex-wrap items-center gap-2 text-xs">
+                          <span className="text-t3">
+                            {field.label}
+                            {field.required ? " *" : ""}
+                          </span>
+                          {field.options.map((item) => {
+                            const label = fieldOptionLabel(item);
+                            const active = values.includes(label);
+                            return (
+                              <label key={label} className="text-t1 flex items-center gap-1">
+                                <input
+                                  type="checkbox"
+                                  disabled={!canEdit}
+                                  checked={active}
+                                  onChange={() =>
+                                    setFieldValues(
+                                      option.id,
+                                      field.id,
+                                      active
+                                        ? values.filter((value) => value !== label)
+                                        : [...values, label]
+                                    )
+                                  }
+                                />
+                                {label}
+                              </label>
+                            );
+                          })}
+                        </div>
+                      );
+                    }
+                    return (
+                      <label key={field.id} className="flex min-w-40 flex-1 items-center gap-2 text-xs">
+                        <span className="text-t3 shrink-0">
+                          {field.label}
+                          {field.required ? " *" : ""}
+                        </span>
+                        <input
+                          className="input-theme w-full rounded px-2 py-1 text-sm"
+                          disabled={!canEdit}
+                          maxLength={100}
+                          value={values[0] ?? ""}
+                          placeholder={field.label}
+                          onChange={(event) =>
+                            setFieldValues(
+                              option.id,
+                              field.id,
+                              event.target.value ? [event.target.value] : []
+                            )
+                          }
+                        />
+                      </label>
+                    );
+                  })}
               </div>
             );
           })}
         </div>
-        <p className="text-t3 mt-2 text-xs">
-          請依實際情形勾選；標示「與同組擇一」的身分別僅能勾選一個。
-        </p>
+        <p className="text-t3 mt-2 text-xs">請依實際情形勾選。</p>
       </section>
 
       <section className="border-themed bg-card rounded-lg p-4">

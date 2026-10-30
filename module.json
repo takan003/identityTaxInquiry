@@ -13,7 +13,7 @@
   "author": {
     "author": "takan003",
     "authorUrl": "https://github.com/takan003",
-    "version": "0.1.21",
+    "version": "0.1.22",
     "releasedAt": "2026-10-30"
   },
   "provides": { "student": true, "parent": true, "staff": true, "admin": true },
@@ -58,6 +58,13 @@
   ],
   "hooks": [],
   "changelog": [
+    {
+      "version": "0.1.22",
+      "releasedAt": "2026-10-30",
+      "notes": [
+        "學生端身分別改為原則上一行顯示（標籤與進階選項同列，必要時自動換行），並移除「與同組擇一」提示。"
+      ]
+    },
     {
       "version": "0.1.21",
       "releasedAt": "2026-10-30",
