@@ -13,7 +13,7 @@
   "author": {
     "author": "takan003",
     "authorUrl": "https://github.com/takan003",
-    "version": "0.1.13",
+    "version": "0.1.14",
     "releasedAt": "2026-10-30"
   },
   "provides": { "student": true, "parent": true, "staff": true, "admin": true },
@@ -58,6 +58,13 @@
   ],
   "hooks": [],
   "changelog": [
+    {
+      "version": "0.1.14",
+      "releasedAt": "2026-10-30",
+      "notes": [
+        "實施說明編輯器加大：預設高度 6rem→12rem、字級改為 text-base，仍可手動拖曳調整大小。"
+      ]
+    },
     {
       "version": "0.1.13",
       "releasedAt": "2026-10-30",

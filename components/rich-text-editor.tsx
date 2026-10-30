@@ -372,11 +372,11 @@ export function RichTextEditor({
           aria-label={ariaLabel}
           contentEditable={!disabled}
           suppressContentEditableWarning
-          className={`input-theme w-full px-3 py-2 text-sm ${
-            compact ? "min-h-16" : "min-h-24"
+          className={`input-theme w-full px-3 py-2 text-base ${
+            compact ? "min-h-16" : "min-h-48"
           } ${disabled ? "opacity-60" : ""}`}
           style={{
-            minHeight: compact ? "4rem" : "6rem",
+            minHeight: compact ? "4rem" : "12rem",
             resize: disabled ? "none" : "both",
             overflow: "auto",
             borderRadius: 0,
