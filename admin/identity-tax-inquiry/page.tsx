@@ -128,6 +128,11 @@ export default function IdentityTaxInquiryAdminPage() {
     if (!form || saving) return;
     setSaving(true);
     try {
+      // 取消「開放勾選」的項目儲存時自動排到最後（同組內維持原順序）
+      const orderedOptions = [...form.identityOptions].sort(
+        (a, b) => Number(b.enabled) - Number(a.enabled)
+      );
+      setForm({ ...form, identityOptions: orderedOptions });
       const response = await fetch("/api/admin/identity-tax-inquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -136,7 +141,7 @@ export default function IdentityTaxInquiryAdminPage() {
           openAt: fromDateTimeLocal(form.openAt),
           closeAt: fromDateTimeLocal(form.closeAt),
           instructions: form.instructions,
-          identityOptions: form.identityOptions,
+          identityOptions: orderedOptions,
         }),
       });
       const data = await response.json();
