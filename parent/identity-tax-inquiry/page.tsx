@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Toast, { type ToastMessage } from "@/components/Toast";
-import { RichTextContent } from "@/components/RichTextEditor";
-import { stripHtmlToText } from "@/lib/rich-text";
+import { RichTextContent } from "../../components/rich-text-editor";
+import { stripHtmlToText } from "../../lib/rich-text";
 import DisclosureArrow from "@/components/DisclosureArrow";
 import {
   CONFIRMATION_STATUS_LABELS,

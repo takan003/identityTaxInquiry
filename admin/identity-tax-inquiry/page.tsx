@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Toast, { type ToastMessage } from "@/components/Toast";
 import DisclosureArrow from "@/components/DisclosureArrow";
-import { RichTextEditor } from "@/components/RichTextEditor";
+import { RichTextEditor } from "../../components/rich-text-editor";
 import {
   CONFIRMATION_STATUS_LABELS,
   IDENTITY_WINDOW_LABELS,

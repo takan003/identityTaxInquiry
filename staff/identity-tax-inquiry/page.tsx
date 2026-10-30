@@ -3,8 +3,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Toast, { type ToastMessage } from "@/components/Toast";
-import { RichTextContent } from "@/components/RichTextEditor";
-import { stripHtmlToText } from "@/lib/rich-text";
+import { RichTextContent } from "../../components/rich-text-editor";
+import { stripHtmlToText } from "../../lib/rich-text";
 import {
   CONFIRMATION_STATUS_LABELS,
   IDENTITY_WINDOW_LABELS,

@@ -4,7 +4,7 @@ import { enforceRateLimit, RATE } from "@/lib/rate-limit";
 import { getClientIp, logActivity } from "@/lib/audit";
 import { requireModulePermission, toAuthResponse } from "@/lib/dal";
 import { getCurrentPeriod } from "@/lib/settings-server";
-import { normalizeRichHtmlField } from "@/lib/rich-text";
+import { normalizeRichHtmlField } from "../../../lib/rich-text";
 import {
   buildInquiryCsv,
   buildInquiryRows,
