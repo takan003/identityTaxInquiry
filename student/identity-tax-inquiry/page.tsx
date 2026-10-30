@@ -502,7 +502,9 @@ export default function IdentityTaxInquiryStudentPage() {
           ))}
         </div>
         {taxRequired && taxSubject === "one" && (
-          <p className="text-t3 mt-2 text-xs">父母離異時，請填寫具有撫養權一方的資料即可。</p>
+          <p className="text-t3 mt-2 text-xs">
+            父母離異或一方亡故時，請填寫具有撫養權或存續一方的資料即可。
+          </p>
         )}
         <label className="mt-3 block text-sm">
           <span className="text-t2 mb-1 block">備註（選填）</span>

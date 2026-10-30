@@ -232,7 +232,7 @@ export type TaxSubject = "both" | "one" | "self";
 
 export const TAX_SUBJECT_LABELS: Record<TaxSubject, string> = {
   both: "父母雙方",
-  one: "父或母一方（父母離異）",
+  one: "父或母一方（離異或亡故）",
   self: "本人（已結婚）",
 };
 
@@ -778,7 +778,7 @@ export function parseRecordInput(
       if (taxSubject === "one" && !(isCompleteParent(father) || isCompleteParent(mother))) {
         return {
           ok: false,
-          message: "父母離異時，請填寫具有撫養權一方的姓名與身分證字號",
+          message: "父母離異或一方亡故時，請填寫具有撫養權或存續一方的姓名與身分證字號",
         };
       }
       if (taxSubject === "self" && !isCompleteParent(self)) {

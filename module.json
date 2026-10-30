@@ -13,7 +13,7 @@
   "author": {
     "author": "takan003",
     "authorUrl": "https://github.com/takan003",
-    "version": "0.1.24",
+    "version": "0.1.25",
     "releasedAt": "2026-10-30"
   },
   "provides": { "student": true, "parent": true, "staff": true, "admin": true },
@@ -58,6 +58,13 @@
   ],
   "hooks": [],
   "changelog": [
+    {
+      "version": "0.1.25",
+      "releasedAt": "2026-10-30",
+      "notes": [
+        "查調對象「父或母一方」涵蓋亡故情形：文字改為「父或母一方（離異或亡故）」，驗證與提示同步調整。"
+      ]
+    },
     {
       "version": "0.1.24",
       "releasedAt": "2026-10-30",
