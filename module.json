@@ -13,7 +13,7 @@
   "author": {
     "author": "takan003",
     "authorUrl": "https://github.com/takan003",
-    "version": "0.1.27",
+    "version": "0.1.28",
     "releasedAt": "2026-10-30"
   },
   "provides": { "student": true, "parent": true, "staff": true, "admin": true },
@@ -58,6 +58,13 @@
   ],
   "hooks": [],
   "changelog": [
+    {
+      "version": "0.1.28",
+      "releasedAt": "2026-10-30",
+      "notes": [
+        "手機版身分別欄位調整：文字欄位改為整列顯示且輸入框至少 10rem，下拉選單至少 6rem，避免身分證字號被壓縮。"
+      ]
+    },
     {
       "version": "0.1.27",
       "releasedAt": "2026-10-30",

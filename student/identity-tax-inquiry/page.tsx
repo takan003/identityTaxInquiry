@@ -368,7 +368,7 @@ export default function IdentityTaxInquiryStudentPage() {
                             {field.required ? " *" : ""}
                           </span>
                           <select
-                            className="input-theme rounded px-2 py-1 text-sm"
+                            className="input-theme min-w-24 rounded px-2 py-1 text-sm"
                             disabled={!canEdit}
                             value={values[0] ?? ""}
                             onChange={(event) =>
@@ -423,13 +423,16 @@ export default function IdentityTaxInquiryStudentPage() {
                       );
                     }
                     return (
-                      <label key={field.id} className="flex min-w-40 flex-1 items-center gap-2 text-xs">
+                      <label
+                        key={field.id}
+                        className="flex w-full flex-wrap items-center gap-2 text-xs sm:w-auto sm:min-w-64"
+                      >
                         <span className="text-t3 shrink-0">
                           {field.label}
                           {field.required ? " *" : ""}
                         </span>
                         <input
-                          className="input-theme w-full rounded px-2 py-1 text-sm"
+                          className="input-theme min-w-40 flex-1 rounded px-2 py-1 text-sm"
                           disabled={!canEdit}
                           maxLength={100}
                           value={values[0] ?? ""}
