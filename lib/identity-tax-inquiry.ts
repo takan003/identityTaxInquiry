@@ -1,5 +1,5 @@
 import "server-only";
-import { getAdminDb } from "@/lib/firebase-admin";
+import { scopedDb } from "@/lib/module-db";
 import { getCacheTtlSeconds, getCurrentPeriod } from "@/lib/settings-server";
 import type { SchoolPeriod } from "@/types/settings";
 import { isActiveEntry } from "@/lib/roster";
@@ -40,11 +40,11 @@ async function ttlMs(): Promise<number> {
 }
 
 function settingsRef() {
-  return getAdminDb().collection(SETTINGS_COLLECTION).doc(SETTINGS_DOC_ID);
+  return scopedDb("identityTaxInquiry").collection(SETTINGS_COLLECTION).doc(SETTINGS_DOC_ID);
 }
 
 function recordsRef() {
-  return getAdminDb().collection(RECORDS_COLLECTION);
+  return scopedDb("identityTaxInquiry").collection(RECORDS_COLLECTION);
 }
 
 export function recordDocId(period: string, studentUid: string): string {
@@ -339,7 +339,7 @@ export async function loadClassStudents(
 ): Promise<RosterStudent[]> {
   const key = `${CACHE_PREFIX}roster:${period.academicYear}-${period.semester}:${classCode}`;
   return cachedRead(key, await ttlMs(), async () => {
-    const snap = await getAdminDb()
+    const snap = await scopedDb("identityTaxInquiry")
       .collection(rosterCollection("student"))
       .where("academicYear", "==", period.academicYear)
       .where("semester", "==", period.semester)
@@ -527,7 +527,7 @@ export async function linkedChildForParent(
   const expectedClass =
     typeof parentEntry.classCode === "string" ? parentEntry.classCode.trim() : "";
   const period = await getCurrentPeriod();
-  const snapshot = await getAdminDb()
+  const snapshot = await scopedDb("identityTaxInquiry")
     .collection(rosterCollection("student"))
     .where("studentId", "==", studentId)
     .where("academicYear", "==", period.academicYear)
